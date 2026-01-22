@@ -1,0 +1,87 @@
+﻿@model IEnumerable<mvc2025TermProject.Models.Contact>
+
+@{
+    ViewData["Title"] = "Contact Messages";
+}
+
+<div class="container my-3 my-md-4">
+    <h4 class="fs-2">@ViewData["Title"]</h4>
+    <hr />
+
+    <div class="table-responsive">
+        <table class="table align-middle table-hover">
+            <thead class="">
+                <tr>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.Name) *@
+                        From
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </th>
+                    <th>
+                        @* @Html.DisplayNameFor(model => model.Topic) *@
+                        Topic
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Subject)
+                    </th>
+                    @* <th>
+                    @Html.DisplayNameFor(model => model.Message)
+                </th> *@
+                    <th class="text-nowrap">
+                        @Html.DisplayNameFor(model => model.SubmittedAt)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsRead)
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-nowrap">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td class="text-nowrap">
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td class="text-nowrap">
+                            @Html.DisplayFor(modelItem => item.Topic)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Subject)
+                        </td>
+                        @* <td>
+                        @Html.DisplayFor(modelItem => item.Message)
+                    </td> *@
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.SubmittedAt)
+                        </td>
+                        @* <td>
+                        @Html.DisplayFor(modelItem => item.IsRead)
+                    </td> *@
+                        <td class="text-center">
+                            @if (item.IsRead == true)
+                            {
+                                <span class="badge bg-success">Read</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">Unread</span>
+                            }
+                        </td>
+                        <td class="text-nowrap">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="text-primary text-decoration-none me-3">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger text-decoration-none">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+

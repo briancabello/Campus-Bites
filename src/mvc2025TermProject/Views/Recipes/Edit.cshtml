@@ -1,0 +1,158 @@
+﻿@model mvc2025TermProject.Models.RecipeEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Recipe";
+
+    string statusBadge;
+    if (Model.Status == "Public")
+    {
+        statusBadge = "badge bg-success";
+    }
+    else if (Model.Status == "Initial")
+    {
+        statusBadge = "badge bg-info";
+    }
+    else
+    {
+        statusBadge = "badge bg-secondary";
+    }
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="p-3 p-md-4 border-bottom">
+                <!-- Desktop: Title left, Date right -->
+                <div class="d-none d-md-flex align-items-center justify-content-between mb-1">
+                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+
+                    <div class="text-muted fw-medium">
+                        <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, MMMM d, yyyy")
+                    </div>
+                </div>
+
+                <!-- Mobile: Just Title -->
+                <div class="d-md-none">
+                    <h3 class="fw-bold text-dark mb-1">@ViewData["Title"]</h3>
+                </div>
+
+                <div class="row">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="text-muted small">
+                            <i class="bi bi-calendar me-1"></i>Created: @Model.CreatedDate?.ToString("MMMM dd, yyyy")
+                        </div>
+                        <div>•</div>
+                        <div class="text-muted small">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Last modified: @Model.LastModifiedDate?.ToString("MMMM d, yyyy")
+                        </div>
+                        <div>•</div>
+                        <div class="text-muted small">
+                            <i class="bi bi-info-circle me-1"></i>Current Status: <span class="@statusBadge">@Model.Status</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-3 p-md-4">
+                <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <input type="hidden" asp-for="ID" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g., Classic Pancakes" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label fw-semibold"></label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                            <option value="">-- Choose a Category --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Instructions" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Instructions" class="form-control" rows="6"
+                                  placeholder="Write clear, step-by-step instructions."></textarea>
+                        <span asp-validation-for="Instructions" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tips" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Tips" class="form-control" rows="3"
+                                  placeholder="Optional: Notes (max 1000 chars)."></textarea>
+                        <span asp-validation-for="Tips" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label asp-for="PreparationTime" class="form-label fw-semibold">Prep Time (minutes)</label>
+                            <input asp-for="PreparationTime" class="form-control" />
+                            <span asp-validation-for="PreparationTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="CookTime" class="form-label fw-semibold">Cook Time (minutes)</label>
+                            <input asp-for="CookTime" class="form-control" />
+                            <span asp-validation-for="CookTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="TemperatureFahrenheit" class="form-label fw-semibold"></label>
+                            <input asp-for="TemperatureFahrenheit" class="form-control" placeholder="°F (80-550)" />
+                            <span asp-validation-for="TemperatureFahrenheit" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Servings" class="form-label fw-semibold"></label>
+                            <input asp-for="Servings" class="form-control" />
+                            <span asp-validation-for="Servings" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Nutrition Information -->
+                    <div class="mb-3">
+                        <label asp-for="NutritionInfo" class="form-label fw-semibold"></label>
+                        <textarea asp-for="NutritionInfo" class="form-control" rows="3"
+                                  placeholder="Optional: Nutritional information (calories, protein, carbs, etc.)"></textarea>
+                        <span asp-validation-for="NutritionInfo" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Special Equipment -->
+                    <div class="mb-3">
+                        <label asp-for="SpecialEquipment" class="form-label fw-semibold"></label>
+                        <textarea asp-for="SpecialEquipment" class="form-control" rows="2"
+                                  placeholder="Optional: Special equipment needed (blender, mixer, etc.)"></textarea>
+                        <span asp-validation-for="SpecialEquipment" class="text-danger small"></span>
+                    </div>
+
+                    <!-- YouTube Video Link -->
+                    <div class="mb-3">
+                        <label asp-for="YouTubeVideoLink" class="form-label fw-semibold"></label>
+                        <input asp-for="YouTubeVideoLink" class="form-control"
+                               placeholder="Optional: https://youtube.com/watch?v=..." />
+                        <span asp-validation-for="YouTubeVideoLink" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-cb-primary shadow-sm">
+                            <i class="bi bi-check-circle me-1"></i> Save Changes
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.ID" class="btn btn-outline-cb-primary">
+                            <i class="bi bi-eye me-1"></i> View Recipe
+                        </a>
+                        <a asp-action="MyRecipes" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

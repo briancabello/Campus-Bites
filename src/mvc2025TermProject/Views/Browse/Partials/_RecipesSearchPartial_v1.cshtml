@@ -1,0 +1,44 @@
+﻿<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <form asp-action="Recipes" method="get" class="row g-3 align-items-center">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text"
+                                    name="filterCriteria"
+                                    value="@ViewData["SearchFilterCriteria"]"
+                                    class="form-control"
+                                    placeholder="Search recipes by name, category, or ingredients..."
+                                    aria-label="Search recipes">
+                            <button type="submit" class="btn btn-cb-primary">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="d-flex gap-2">
+                            <a asp-action="Recipes"
+                                class="btn btn-outline-secondary flex-grow-1">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                            </a>
+                            <a asp-controller="Browse" asp-action="Index" class="btn btn-light border">
+                                <i class="bi bi-grid-3x3-gap me-1"></i> All Categories
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                @if ((bool)(ViewData["HasSearch"] ?? false))
+                {
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Found @ViewData["TotalMatches"] recipe(s) matching "@ViewData["SearchFilterCriteria"]"
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

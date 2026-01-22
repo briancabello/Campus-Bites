@@ -1,0 +1,150 @@
+﻿@model PaginatedList<mvc2025TermProject.Models.RecipeOverviewViewModel>
+
+@{
+    ViewData["Title"] = $"Recipes in {ViewData["CategoryName"]}";
+}
+
+<section class="p-0">
+    <div class="container">
+        <!-- breadcrumb -->
+        <section class="py-3 py-md-4">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Home" asp-action="Index" class="text-color-eb">Home</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Browse" asp-action="Index" class="text-color-eb">Browse</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Browse" asp-action="Recipes" class="text-color-eb">All Recipes</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">@ViewData["CategoryName"]</li>
+                        </ol>
+                    </nav>
+
+                    <h1 class="display-6 fw-bold text-dark mb-2">@ViewData["CategoryName"]</h1>
+                    <hr />
+                    <p class="text-muted mb-0">@ViewData["CategoryDescription"]</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search within Category -->
+        <section class="py-1 py-md-2">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <form asp-action="Category" asp-route-id="@ViewContext.RouteData.Values["id"]" method="get" class="row g-3 align-items-center">
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        <input type="text"
+                                               name="filterCriteria"
+                                               value="@ViewData["SearchFilterCriteria"]"
+                                               class="form-control"
+                                               placeholder="Search recipes by name or ingredients..."
+                                               aria-label="Search recipes">
+                                        <button type="submit" class="btn btn-cb-primary">
+                                            <i class="bi bi-search"></i> Search
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <a asp-action="Category" asp-route-id="@ViewContext.RouteData.Values["id"]"
+                                           class="btn btn-outline-secondary flex-grow-1">
+                                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                                        </a>
+                                        <a asp-controller="Browse" asp-action="Index" class="btn btn-light border">
+                                            <i class="bi bi-grid-3x3-gap me-1"></i> All Categories
+                                        </a>
+                                    </div>
+                                </div>
+                            </form>
+
+                            @if ((bool)ViewData["HasSearch"]!)
+                            {
+                                <div class="mt-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Found @ViewData["TotalMatches"] recipe(s) matching "@ViewData["SearchFilterCriteria"]"
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recipes List -->
+            <div class="row">
+                <div class="col-12">
+                    @if (Model is null || !Model.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="bi bi-search display-1 text-muted"></i>
+                            <h3 class="mt-3 text-muted">No recipes found in this category</h3>
+                            <p class="text-muted mb-4">Try adjusting your search criteria or browse other categories</p>
+                            <a asp-controller="Browse" asp-action="Index" class="btn btn-cb-primary">
+                                <i class="bi bi-grid-3x3-gap me-1"></i> Browse All Categories
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row g-4">
+                            @foreach (var recipe in Model)
+                            {
+                                <div class="col-xl-4 col-lg-6">
+                                    <a asp-controller="Browse" asp-action="Recipe" asp-route-id="@recipe.ID" class="text-decoration-none">
+                                        <div class="card h-100 border-0 bg-transparent shadow-sm recipe-card">
+                                            <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center rounded-top-3 h-300">
+                                                @if (recipe.Images?.Any(img => img.IsApproved == true && img.IsMainImage == true) == true)
+                                                {
+                                                    var mainImage = recipe.Images.First(img => img.IsApproved == true && img.IsMainImage == true);
+                                                    <img src="@mainImage.FilePath" class="img-fluid h-100 w-100 rounded-top-3" style="object-fit: cover;" alt="@mainImage.AltText" title="@mainImage.Description">
+                                                }
+                                                else
+                                                {
+                                                    <div class="text-center">
+                                                        <i class="bi bi-image text-secondary opacity-50 display-6 mb-2"></i>
+                                                        <span class="text-secondary fw-semibold d-block small">Image Not Available</span>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <!-- Recipe -->
+                                            <div class="card-body p-3 bg-transparent d-flex flex-column">
+                                                <h5 class="card-title fw-bold mb-2 text-dark">
+                                                    @recipe.Name
+                                                </h5>
+
+                                                <div class="recipe-meta text-muted small mb-3 flex-grow-1">
+                                                    <div class="d-flex gap-3 mt-2">
+                                                        <span><i class="bi bi-clock me-1"></i>@recipe.TotalTime</span>
+                                                        <span><i class="bi bi-people me-1"></i>@recipe.Servings</span>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <i class="bi bi-person me-1"></i>By @recipe.OwnerName
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="mt-5">
+                            <partial name="_PaginationPartial" model="Model" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

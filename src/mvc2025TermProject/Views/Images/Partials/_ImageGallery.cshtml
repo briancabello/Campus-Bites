@@ -1,0 +1,203 @@
+﻿@model mvc2025TermProject.Models.ImageUploadViewModel
+
+<div class="hero-images-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="main-image-container bg-light rounded-3 text-center position-relative">
+                @{
+                    var mainImage = Model.Images?.FirstOrDefault(i => i.IsMainImage == true);
+                    var hasMainImage = mainImage != null;
+                    var isMainApproved = mainImage?.IsApproved == true;
+                }
+
+                @if (hasMainImage)
+                {
+                    <!-- Main Image -->
+                    <div class="position-relative main-image-wrapper">
+                        <img src="@mainImage.FilePath"
+                             class="img-fluid rounded-3 w-100 h-400 @(isMainApproved ? "" : "opacity-50")"
+                             alt="@mainImage.AltText"
+                             style="object-fit: cover;" />
+
+                        @if (!isMainApproved)
+                        {
+                            <!-- Pending Approval Overlay -->
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                                <div class="bg-dark bg-opacity-75 text-white rounded p-3 text-center">
+                                    <i class="bi bi-clock-history display-4 d-block mb-2"></i>
+                                    <strong>Pending Approval</strong>
+                                    <p class="mb-0 small">Image awaiting admin review</p>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Action Buttons -->
+                        @* @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.Recipe?.Status == "Draft" || Model.Recipe?.Status == "Initial"))
+                        {
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <a href="#"
+                                   class="btn btn-danger btn-sm image-action-link"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#deleteImageModal-@mainImage.Id"
+                                   title="Delete image">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        } *@
+                    </div>
+                }
+                else
+                {
+                    <!-- No Main Image - Upload Button -->
+                    @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.RecipeStatus == "Draft" || Model.RecipeStatus == "Initial"))
+                    {
+                        <div class="py-5">
+                            <a href="#"
+                               class="text-muted text-decoration-none image-action-link text-color-eb"
+                               data-bs-toggle="modal"
+                               data-bs-target="#uploadImageModal">
+                                <i class="bi bi-plus-square display-1"></i>
+                                <p class="text-muted mt-2">Main Image Not Available</p>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="py-5">
+                            <i class="bi bi-image display-1 text-muted"></i>
+                            <p class="text-muted mt-2">Main Image Not Available</p>
+                        </div>
+                    }
+                }
+
+                <span class="position-absolute top-0 start-0 badge bg-primary m-3">
+                    <i class="bi bi-star-fill me-1"></i>Main Image
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thumbnail Images (6 slots) -->
+    <div class="row">
+        <div class="col-12">
+            <h6 class="fw-bold mb-3">Additional Images</h6>
+
+            <div class="row g-2">
+                @for (int i = 0; i < 6; i++)
+                {
+                    var thumbnail = Model.Images?.Where(img => img.IsMainImage != true).ElementAtOrDefault(i);
+                    var hasThumbnail = thumbnail != null;
+                    var isThumbnailApproved = thumbnail?.IsApproved == true;
+
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="position-relative">
+                            @if (hasThumbnail)
+                            {
+                                <!-- Thumbnail -->
+                                <div class="position-relative thumbnail-hover">
+                                    <img src="@thumbnail.FilePath"
+                                         class="img-fluid rounded border w-100 h-120 @(isThumbnailApproved ? "" : "opacity-50")"
+                                         alt="@thumbnail.AltText"
+                                         style="object-fit: cover;" />
+
+                                    @if (!isThumbnailApproved)
+                                    {
+                                        <!-- Small Pending Badge -->
+                                        <div class="position-absolute top-0 end-0 m-1">
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i>
+                                            </span>
+                                        </div>
+                                    }
+
+                                    <!-- Action Buttons (HOVER) -->
+                                    @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.RecipeStatus == "Draft" || Model.RecipeStatus == "Initial"))
+                                    {
+                                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center opacity-0 hover-opacity-100 ">
+                                            <div class="d-flex gap-2">
+                                                <!-- Set as Main Image -->
+                                                <form asp-controller="Images" asp-action="SetAsMain" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@thumbnail.Id" />
+                                                    <button type="submit" class="btn btn-primary btn-sm image-action-link" title="Set as main image">
+                                                        <i class="bi bi-star-fill"></i>
+                                                    </button>
+                                                </form>
+
+                                                @* <!-- Delete Button -->
+                                                <a href="#"
+                                                   class="btn btn-danger btn-sm image-action-link"
+                                                   data-bs-toggle="modal"
+                                                   data-bs-target="#deleteImageModal-@thumbnail.Id"
+                                                   title="Delete image">
+                                                    <i class="bi bi-trash"></i>
+                                                </a> *@
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Empty Thumbnail Slot -->
+                                @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.RecipeStatus == "Draft" || Model.RecipeStatus == "Initial"))
+                                {
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#uploadImageModal" title="Upload image"
+                                       class="bg-light rounded border d-flex align-items-center justify-content-center text-muted thumbnail-hover text-decoration-none image-action-link h-120 text-color-eb">
+                                        <i class="bi bi-plus-square fs-3"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded border d-flex align-items-center justify-content-center text-muted h-120">
+                                        <i class="bi bi-image fs-3"></i>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Delete Modals for each image -->
+@if (Model.Images != null)
+{
+    foreach (var image in Model.Images)
+    {
+        <partial name="Partials/_DeleteImageModal" model="image" />
+    }
+}
+
+<!-- Image Status Messages -->
+@if (Model.Images != null && Model.Images.Any(i => i.IsApproved == false))
+{
+    <div class="alert alert-warning mt-3 small" role="alert">
+        <i class="bi bi-clock-history"></i>
+        <strong>@Model.Images.Count(i => i.IsApproved == false) image(s) pending approval.</strong>
+        These images will be visible to everyone once approved by an administrator.
+
+        @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId)
+        {
+            <br>
+            <small>You can still manage your images while they await approval.</small>
+        }
+    </div>
+}
+
+@if (Model.Images == null || !Model.Images.Any())
+{
+    <div class="alert alert-info mt-3 small" role="alert">
+        <i class="bi bi-info-circle"></i>
+        <strong>No images uploaded yet.</strong>
+        @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId)
+        {
+            <span>Add images to make your recipe more appealing!</span>
+        }
+        else
+        {
+            <span>Recipe owner hasn't uploaded any images yet.</span>
+        }
+    </div>
+}

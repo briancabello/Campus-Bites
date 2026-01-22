@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mvc2025TermProject", "mvc2025TermProject\mvc2025TermProject.csproj", "{7178EDBD-32DD-44EF-917F-E47366A8E10F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailService", "EmailService\EmailService.csproj", "{3E4BDE79-1EC6-4630-8607-D414121BA5D5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7178EDBD-32DD-44EF-917F-E47366A8E10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7178EDBD-32DD-44EF-917F-E47366A8E10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7178EDBD-32DD-44EF-917F-E47366A8E10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7178EDBD-32DD-44EF-917F-E47366A8E10F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4BDE79-1EC6-4630-8607-D414121BA5D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4BDE79-1EC6-4630-8607-D414121BA5D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4BDE79-1EC6-4630-8607-D414121BA5D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4BDE79-1EC6-4630-8607-D414121BA5D5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9BC45837-34EC-44F9-A902-3F263304D731}
+	EndGlobalSection
+EndGlobal

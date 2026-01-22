@@ -1,0 +1,101 @@
+﻿@model mvc2025TermProject.Models.Image
+
+<div class="card border shadow-sm h-100">
+    <!-- Image Preview -->
+    <div class="position-relative">
+        <img src="@Model.FilePath"
+             class="card-img-top h-200"
+             alt="@Model.AltText"
+             style="object-fit: cover;">
+
+        <!-- Status Badge -->
+        @if (Model.IsApproved == true)
+        {
+            <span class="position-absolute top-0 end-0 badge bg-success m-2">
+                <i class="bi bi-check-circle me-1"></i>Approved
+            </span>
+        }
+        else
+        {
+            <span class="position-absolute top-0 end-0 badge bg-warning text-dark m-2">
+                <i class="bi bi-clock me-1"></i>Pending
+            </span>
+        }
+
+        <!-- Main Image Badge -->
+        @if (Model.IsMainImage == true)
+        {
+            <span class="position-absolute top-0 start-0 badge bg-primary m-2">
+                <i class="bi bi-star-fill me-1"></i>Main
+            </span>
+        }
+    </div>
+
+    <div class="card-body">
+        <!-- Recipe Name -->
+        <h6 class="card-title fw-bold mb-2">
+            <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.RecipeId"
+               class="text-decoration-none text-dark">
+                @Model.Recipe?.Name
+            </a>
+        </h6>
+
+        <!-- Image Details -->
+        <div class="small text-muted mb-3">
+            <div class="mb-1">
+                <i class="bi bi-person me-1"></i>
+                <strong>Uploaded by:</strong> @Model.UploadedBy?.FirstName @Model.UploadedBy?.LastName
+            </div>
+            <div class="mb-1">
+                <i class="bi bi-calendar me-1"></i>
+                <strong>Date:</strong> @Model.UploadedDate?.ToString("MMM d, yyyy")
+            </div>
+            <div class="mb-1">
+                <i class="bi bi-file-earmark me-1"></i>
+                <strong>Type:</strong> @Model.FileType?.ToUpper()
+            </div>
+            <div>
+                <i class="bi bi-hdd me-1"></i>
+                <strong>Size:</strong> @((Model.FileSize ?? 0) / 1024) KB
+            </div>
+        </div>
+
+        <!-- Alt Text (if provided) -->
+        @if (!string.IsNullOrEmpty(Model.AltText))
+        {
+            <div class="small mb-3">
+                <strong>Alt Text:</strong>
+                <span class="text-muted">@Model.AltText</span>
+            </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2">
+            @if (Model.IsApproved == false)
+            {
+                <!-- Approve Button -->
+                <button type="button"
+                        class="btn btn-success btn-sm flex-fill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#approveModal-@Model.Id">
+                    <i class="bi bi-check-circle me-1"></i>Approve
+                </button>
+
+                <!-- Reject Button -->
+                <button type="button"
+                        class="btn btn-danger btn-sm flex-fill"
+                        data-bs-toggle="modal"
+                        data-bs-target="#rejectModal-@Model.Id">
+                    <i class="bi bi-x-circle me-1"></i>Reject
+                </button>
+            }
+            else
+            {
+                <div class="text-success small">
+                    <i class="bi bi-check-circle-fill me-1"></i>
+                    Approved on @Model.ApprovedDate?.ToString("MMM d, yyyy")
+                </div>
+            }
+        </div>
+    </div>
+</div>

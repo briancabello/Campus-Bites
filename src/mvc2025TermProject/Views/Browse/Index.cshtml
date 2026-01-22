@@ -1,0 +1,67 @@
+﻿@model mvc2025TermProject.Models.BrowseViewModel
+
+@{
+    ViewData["Title"] = "Campus Bites - Student Recipe Sharing";
+}
+
+<section class="p-0">
+    <div class="container">
+        <div class="rounded-lgx overflow-hidden border-0 banner-bg-color mt-0 mt-md-4">
+            <div class="row align-items-center g-0">
+                <div class="col-lg-6 p-4 p-md-5">
+                    <partial name="Partials/_HeroSearchForm" model="Model" />
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="text-center p-5">
+                        <i class="bi bi-egg-fried display-1 text-warning"></i>
+                        <i class="bi bi-cup-hot display-1 text-info mx-4"></i>
+                        <i class="bi bi-basket display-1 text-success"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <section class="py-3 py-md-4">
+            <h4 class="fs-2 py-3 mb-0">Recipe Categories</h4>
+            <partial name="Partials/_RecipeCategories" model="Model.FeaturedCategories" />
+        </section>
+
+        <section class="py-3 py-md-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fs-2 mb-0">Latest Recipes</h4>
+                <a asp-controller="Browse" asp-action="Recipes" class="btn btn-outline-cb-primary">
+                    <i class="bi bi-collection me-1"></i> View All Recipes
+                </a>
+            </div>
+            <partial name="Partials/_LatestRecipes" model="Model.LatestRecipes" />
+        </section>
+    </div>
+</section>
+
+<section class="bg-cta py-3 py-md-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8 text-center py-4 py-md-5">
+
+            <h2 class="fs-1 fw-bold text-dark mb-3">
+                Join the Campus Bites Community
+            </h2>
+
+            <p class="text-secondary mb-4 px-0 px-md-3">
+                Sign up for a free account and be part of a growing community that loves simple, delicious recipes.
+            </p>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-center gap-2 gap-sm-3">
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-cb-primary">
+                    <i class="bi bi-person-plus me-2"></i>Register
+                </a>
+
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-cb-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Log In
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>

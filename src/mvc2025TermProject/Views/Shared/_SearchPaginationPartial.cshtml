@@ -1,0 +1,84 @@
+﻿@model PaginatedList<mvc2025TermProject.Models.RecipeCardViewModel>
+
+@{
+    string prevDisabled = !Model!.HasPreviousPage ? "disabled" : "";
+    string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    int totalItems = Model.TotalItemCount;
+    int startItem = (Model.PageIndex - 1) * Model.PageSize + 1;
+    int endItem = Math.Min(Model.PageIndex * Model.PageSize, totalItems);
+
+    // Get search parameters from query string
+    var keyword = Context.Request.Query["keyword"];
+    var categoryId = Context.Request.Query["categoryId"];
+    var startDate = Context.Request.Query["startDate"];
+    var endDate = Context.Request.Query["endDate"];
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-4 py-3 border-top gap-2">
+    <!-- Item Count -->
+    <div class="text-muted small order-2 order-md-1 text-center text-md-start">
+        Showing @startItem to @endItem of @totalItems entries
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Search results pagination" class="order-1 order-md-2">
+        <ul class="pagination pagination-sm mb-0 justify-content-center">
+            <!-- Previous Page -->
+            <li class="page-item @prevDisabled">
+                <a class="page-link"
+                   asp-action="Recipes"
+                   asp-route-keyword="@keyword"
+                   asp-route-categoryId="@categoryId"
+                   asp-route-startDate="@startDate"
+                   asp-route-endDate="@endDate"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)">
+                    <span class="d-none d-sm-inline">Previous</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-left"></i></span>
+                </a>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">
+                            @i
+                            <span class="visually-hidden">(current)</span>
+                        </span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Recipes"
+                           asp-route-keyword="@keyword"
+                           asp-route-categoryId="@categoryId"
+                           asp-route-startDate="@startDate"
+                           asp-route-endDate="@endDate"
+                           asp-route-pageNumber="@i">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+
+            <!-- Next Page -->
+            <li class="page-item @nextDisabled">
+                <a class="page-link"
+                   asp-action="Recipes"
+                   asp-route-keyword="@keyword"
+                   asp-route-categoryId="@categoryId"
+                   asp-route-startDate="@startDate"
+                   asp-route-endDate="@endDate"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)">
+                    <span class="d-none d-sm-inline">Next</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-right"></i></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,297 @@
+html {
+    font-size: 14px;
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* FONT FAMILY */
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+h1, .h1, h2, .h2, h3, .h3 {
+    font-weight: 700;
+    font-family: 'Source Serif Pro', serif;
+    letter-spacing: -0.02em;
+}
+
+h4, .h4, h5, .h5, h6, .h6 {
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+}
+
+.fw-medium {
+    font-weight: 500 !important;
+}
+
+a {
+    text-decoration: none;
+}
+
+.text-justify {
+    text-align: justify;
+}
+
+/* BACKGROUND */
+.banner-bg-color {
+    background-color: #FDF3E6 !important;
+}
+
+.bg-cta {
+    background-color: #f5fbfe !important;
+}
+
+/* COLOR */
+.text-color-eb {
+    color: #2596be !important; /* Eastern Blue */
+}
+
+.text-color-eb:hover,
+.text-color-eb:focus {
+    color: #1e7ea1 !important;
+}
+
+/* HEADER */
+.campus-bites-header {
+    padding: 15px 0 !important;
+}
+
+.navbar-nav li {
+    padding: 0 15px !important;
+}
+
+.rounded-md {
+    border-radius: .5rem !important;
+}
+
+.rounded-lg {
+    border-radius: .75rem !important;
+}
+
+.rounded-lgx {
+    border-radius: 1rem !important;
+}
+
+/* NAVIGATION (MANAGE) */
+.nav-pills .nav-link {
+    color: #212529;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #2596be;
+    color: #fff;
+}
+
+.nav-pills .nav-link:not(.active):hover {
+    background-color: #f8f9fa;
+}
+
+/* BUTTONS */
+footer a:hover,
+figure:hover .recipe-link,
+figure:focus-within .recipe-link,
+.nav-link:hover,
+.nav-link:focus,
+.recipe-link:hover,
+.recipe-link:focus {
+    color: #ff642b !important;
+    text-decoration: none !important;
+}
+
+/* Campus Bites Solid Primary Button */
+.btn-cb-primary {
+    background-color: #2596BE !important;
+    color: #fff !important;
+}
+
+.btn-cb-primary:hover,
+.btn-cb-primary:focus {
+    background-color: #1e7ea1 !important;
+    color: #fff !important;
+}
+
+/* Campus Bites Outline Primary Button */
+.btn-outline-cb-primary {
+    color: #2596BE !important;
+    border: 1.5px solid #2596BE !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn-outline-cb-primary:hover,
+.btn-outline-cb-primary:focus {
+    background-color: #2596BE !important;
+    color: #fff !important;
+    border-color: #2596BE !important;
+}
+
+.btn-outline-cb-primary:active {
+    background-color: #1e7da1 !important;
+    border-color: #1e7da1 !important;
+    color: #fff !important;
+}
+
+/* SECTION */
+.card-placeholder {
+    height: 300px;
+}
+
+.category-card,
+.recipe-card,
+.image-action-link,
+.thumbnail-hover {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.category-card:hover,
+.recipe-card:hover,
+.image-action-link:hover,
+.thumbnail-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
+}
+
+.category-card:hover,
+.recipe-card:hover,
+.image-action-link:hover,
+.thumbnail-hover:hover {
+    color: #ff642b !important;
+    text-decoration: none;
+}
+
+.recipe-card:hover .card-title {
+    color: #ff642b !important;
+}
+
+.card.recipe-card:hover {
+    color: inherit; 
+}
+
+.card.recipe-card:hover .card-title {
+    color: #ff642b !important;
+}
+
+/* Image Hover Actions */
+.hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+
+.transition-opacity {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* AUTHENTICATION */
+.auth-bg {
+    position: relative;
+    min-height: 100vh; /* fills screen height */
+    background: url("/img/auth-bg.jpg") center/cover no-repeat;
+}
+
+.auth-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.25); /* soft white overlay */
+}
+
+/* Card */
+.auth-card {
+    border: none;
+    border-radius: 0.5rem;
+    position: relative;
+    z-index: 1;
+    background-color: #fff;
+}
+
+.auth-accent {
+    height: 10px;
+    background: linear-gradient(90deg, #2596BE 0%, #F8C300 100%);
+}
+
+/* END SECTION */
+
+/* 
+    Height Utilities 
+*/
+.h-120 { height: 120px; }
+.h-150 { height: 150px; }
+.h-200 { height: 200px; }
+.h-250 { height: 250px; }
+.h-300 { height: 300px; }
+.h-350 { height: 350px; }
+.h-400 { height: 400px; }
+.h-500 { height: 500px; }
+.h-600 { height: 600px; }
+
+.min-h-150 { min-height: 150px; }
+.min-h-200 { min-height: 200px; }
+.min-h-250 { min-height: 250px; }
+.min-h-300 { min-height: 300px; }
+.min-h-350 { min-height: 350px; }
+.min-h-400 { min-height: 400px; }
+
+/* 
+    RESPONSIVE 
+    Min-Height Utilities 
+*/
+
+/* MOBILE */
+.min-h-sm-150, .min-h-sm-200, .min-h-sm-250 { min-height: 150px; }
+.min-h-sm-200 { min-height: 200px; }
+.min-h-sm-250 { min-height: 250px; }
+
+/* MEDIA : DEVICES */
+@media (min-width: 576px) {
+    .container { max-width: 540px; }
+}
+
+@media (min-width: 768px) {
+    .container { max-width: 720px; }
+
+    html { font-size: 16px; }
+
+    .min-h-md-200, .min-h-md-250, .min-h-md-300, .min-h-md-350, .min-h-md-400 { min-height: 200px; }
+    .min-h-md-250 { min-height: 250px; }
+    .min-h-md-300 { min-height: 300px; }
+    .min-h-md-350 { min-height: 350px; }
+    .min-h-md-400 { min-height: 400px; }
+}
+
+@media (min-width: 992px) {
+    .container { max-width: 960px; }
+
+    .min-h-lg-250, .min-h-lg-300, .min-h-lg-350, .min-h-lg-400, .min-h-lg-450 { min-height: 250px; }
+    .min-h-lg-300 { min-height: 300px; }
+    .min-h-lg-350 { min-height: 350px; }
+    .min-h-lg-400 { min-height: 400px; }
+    .min-h-lg-450 { min-height: 450px; }
+}
+
+@media (min-width: 1200px) {
+    .container { max-width: 1140px; }
+
+    .min-h-xl-300, .min-h-xl-350, .min-h-xl-400, .min-h-xl-450, .min-h-xl-500 { min-height: 300px; }
+    .min-h-xl-350 { min-height: 350px; }
+    .min-h-xl-400 { min-height: 400px; }
+    .min-h-xl-450 { min-height: 450px; }
+    .min-h-xl-500 { min-height: 500px; }
+}

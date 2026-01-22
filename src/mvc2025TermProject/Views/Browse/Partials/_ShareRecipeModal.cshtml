@@ -1,0 +1,69 @@
+﻿@model mvc2025TermProject.Models.ShareRecipeViewModel
+
+<div class="modal fade" id="shareRecipeModal" tabindex="-1" aria-labelledby="shareRecipeModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-lg shadow-lg overflow-hidden">
+            <div class="auth-accent"></div>
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold text-dark" id="shareRecipeModalLabel">
+                    <i class="bi bi-share me-2"></i>Share Recipe: @Model?.RecipeName
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Browse" asp-action="Share" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="RecipeId" />
+                    <input type="hidden" asp-for="RecipeName" />
+                    <input type="hidden" asp-for="RecipeUrl" />
+
+                    <div class="mb-3">
+                        <label asp-for="RecipientEmail" class="form-label fw-semibold"></label>
+                        <input asp-for="RecipientEmail" class="form-control" placeholder="e.g. john.smith@example.com" />
+                        <span asp-validation-for="RecipientEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Subject" class="form-label fw-semibold"></label>
+                        <input asp-for="Subject" class="form-control" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Message" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Message" class="form-control" rows="4"></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                    </div>
+
+                    <div class="alert alert-light border small py-2 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>Note:</strong> The recipient will receive an email with a link to this recipe.
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <a asp-controller="Browse" asp-action="Recipe" asp-route-id="@Model!.RecipeId" class="btn btn-light border shadow-sm">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-cb-primary shadow-sm">
+                        <i class="bi bi-send me-1"></i>Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (ViewContext.ModelState.ContainsKey("RecipientEmail") ||
+      ViewContext.ModelState.ContainsKey("ShareRecipe.RecipientEmail") ||
+      ViewContext.ModelState.ContainsKey("ShareRecipe.Subject") ||
+      ViewContext.ModelState.ContainsKey("ShareRecipe.Message"))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const shareModal = new bootstrap.Modal(document.getElementById('shareRecipeModal'));
+            shareModal.show();
+        });
+    </script>
+}

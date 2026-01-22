@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "Page Not Found";
+}
+
+<div class="container my-3 my-md-4 pb-5 h-100 d-flex align-items-center justify-content-center">
+    <div class="col-md-6">
+        <div class="card auth-card shadow-lg text-center">
+            <div class="auth-accent rounded-top"></div>
+
+            <div class="card-body p-4 p-md-5">
+                <div class="mb-4">
+                    <i class="bi bi-search text-warning fs-1 mb-3"></i>
+                    <h4 class="fs-4 fw-bold mb-2 text-dark">@ViewData["Title"]</h4>
+                    <p class="text-muted mb-4">
+                        The page you're looking for doesn't exist or may have been moved.
+                        Please check the URL and try again.
+                    </p>
+                </div>
+
+                <hr class="my-4" />
+
+                <p class="text-muted mt-4 small">
+                    Can't find what you're looking for? Try browsing our content or return to the homepage.
+                </p>
+
+                <div class="d-flex justify-content-center gap-3 small">
+                    <a asp-controller="Home" asp-action="Index" class="text-decoration-none text-color-eb">
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

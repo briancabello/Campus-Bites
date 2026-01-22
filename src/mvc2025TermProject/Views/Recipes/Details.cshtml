@@ -1,0 +1,319 @@
+﻿@model mvc2025TermProject.Models.RecipeDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name ?? "Recipe Details";
+
+    string statusBadge;
+
+    if (Model.Status == "Public")
+    {
+        statusBadge = "badge bg-success";
+    }
+    else if (Model.Status == "Draft")
+    {
+        statusBadge = "badge bg-warning text-dark";
+    }
+    else if (Model.Status == "Initial")
+    {
+        statusBadge = "badge bg-info text-dark";
+    }
+    else if (Model.Status == "Private")
+    {
+        statusBadge = "badge bg-dark"; 
+    }
+    else if (Model.Status == "Unlisted")
+    {
+        statusBadge = "badge bg-primary"; 
+    }
+    else
+    {
+        statusBadge = "badge bg-secondary";
+    }
+}
+
+@functions {
+    private bool ContainsNuts(string ingredientName)
+    {
+        if (string.IsNullOrEmpty(ingredientName))
+            return false;
+
+        var nutKeywords = new[]
+        {
+
+            "almond", "walnut", "pecan", "cashew", "pistachio", "hazelnut",
+            "macadamia", "brazil nut", "pine nut", "chestnut",
+
+            "peanut",
+
+            "nut butter", "nut oil", "nut flour", "nutella", "marzipan",
+
+            " nuts", "nut " 
+        };
+
+        var safeKeywords = new[]
+        {
+            "nutmeg", "coconut", "water chestnut", "donut", "doughnut"
+        };
+
+        return nutKeywords.Any(nut =>
+            ingredientName.Contains(nut, StringComparison.OrdinalIgnoreCase)) &&
+           !safeKeywords.Any(safe =>
+            ingredientName.Contains(safe, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+<div class="container my-3 my-md-4">
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>Cannot Publish Recipe</strong>
+            <div class="mt-2">@Html.Raw(TempData["Error"])</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @Html.Raw(TempData["Success"])
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="p-3 p-md-4">
+                <h1 class="fw-bold mb-2 text-dark">@Model.Name</h1>
+
+                <div class="d-flex flex-wrap align-items-center text-muted small mb-2 gap-2">
+                    <div><i class="bi bi-person-circle me-1"></i> @Model.OwnerName</div>
+                    <div>•</div>
+                    <div><i class="bi bi-calendar-event me-1"></i> Created @Model.CreatedDate</div>
+                    @if (Model.LastModifiedDate != null)
+                    {
+                        <div>•</div>
+                        <div><i class="bi bi-clock-history me-1"></i> Updated @Model.LastModifiedDate</div>
+                    }
+                    <div>•</div>
+                    <div>
+                        <span class="@statusBadge">@Model.Status</span>
+                    </div>
+                </div>
+
+                <hr class="my-2" />
+            </div>
+
+            <!-- Hero Images Gallery -->
+            <div class="px-3 px-md-4 pb-3 pb-md-4">
+                <partial name="Partials/_HeroImagesGallery" model="Model" />
+            </div>
+
+            <div class="px-3 px-md-4 pb-3 pb-md-4">
+                <div class="d-flex flex-wrap justify-content-center text-center py-3 px-4 small fw-semibold text-muted text-uppercase">
+                    <div class="mx-3 ">
+                        <div>@Html.DisplayNameFor(m => m.PreparationTime)</div>
+                        <div class="text-dark">@Html.DisplayFor(m => m.PreparationTime)</div>
+                    </div>
+                    @if (Model.CookTime != "N/A" && Model.CookTime != "0 min(s)")
+                    {
+                        <div class="mx-3">
+                            <div>@Html.DisplayNameFor(m => m.CookTime)</div>
+                            <div class="text-dark">@Html.DisplayFor(m => m.CookTime)</div>
+                        </div>
+                    }
+                    <div class="mx-3">
+                        <div>@Html.DisplayNameFor(m => m.TotalTime)</div>
+                        <div class="text-dark">@Html.DisplayFor(m => m.TotalTime)</div>
+                    </div>
+                    @if (Model.TemperatureFahrenheit != "N/A")
+                    {
+                        <div class="mx-3">
+                            <div>@Html.DisplayNameFor(m => m.TemperatureFahrenheit)</div>
+                            <div class="text-dark">@Html.DisplayFor(m => m.TemperatureFahrenheit)</div>
+                        </div>
+                    }
+                    <div class="mx-3">
+                        <div>@Html.DisplayNameFor(m => m.Servings)</div>
+                        <div class="text-dark">@Html.DisplayFor(m => m.Servings)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- YouTube Link -->
+            @if (!string.IsNullOrEmpty(Model.YouTubeVideoLink))
+            {
+                <div class="px-3 px-md-4 pb-3 pb-md-4">
+                    <div class="text-center">
+                        <a href="@Model.YouTubeVideoLink" target="_blank" class="btn btn-outline-danger">
+                            <i class="bi bi-youtube me-1"></i> Watch Video Tutorial on YouTube
+                        </a>
+                    </div>
+                </div>
+            }
+
+            <div class="p-4">
+                <div class="row g-4">
+                    <!-- Ingredients -->
+                    <div class="col-12 col-md-6">
+                        <h5 class="fw-bold border-bottom pb-2 mb-3">Ingredients</h5>
+                        @if (Model.Ingredients == null || !Model.Ingredients.Any())
+                        {
+                            <p class="text-muted">No ingredients listed.</p>
+                        }
+                        else
+                        {
+
+                            var nutIngredients = Model.Ingredients
+                                .Where(ing => !string.IsNullOrEmpty(ing.IngredientName) && 
+                                        ContainsNuts(ing.IngredientName))
+                                .Select(ing => ing.IngredientName)
+                                .Distinct()
+                                .ToList();
+
+        
+                            @if (nutIngredients.Any())
+                            {
+                                <div class="alert alert-warning small py-2 mb-3">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    <strong>Allergy Notice:</strong> This recipe contains 
+                                    <strong>@string.Join(", ", nutIngredients)</strong>.
+                                </div>
+                            }
+
+                            <div class="row g-2">
+                                @foreach (var ing in Model.Ingredients)
+                                {
+                                    <div class="col-12">
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body py-2">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="flex-grow-1">
+                                                        <div class="mb-1">
+                                                            <strong class="text-primary">@Html.DisplayFor(model => ing.Quantity) @Html.DisplayFor(model => ing.Unit)</strong>
+                                                            <strong>@Html.DisplayFor(model => ing.IngredientName)</strong>
+                                                            @if (!string.IsNullOrWhiteSpace(ing.Notes))
+                                                            {
+                                                                <span class="text-muted ms-2 small">• @Html.DisplayFor(model => ing.Notes)</span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    @if (User.Identity?.IsAuthenticated == true && Model.OwnerId == ViewData["CurrentUserId"]?.ToString() && (Model.Status == "Draft" || Model.Status == "Initial"))
+                                                    {
+                                                        <button type="button" class="btn btn-sm btn-outline-danger border-0 ms-2"
+                                                                data-bs-toggle="modal" data-bs-target="#deleteIngredientModal-@ing.IngredientId"
+                                                                title="Remove ingredient">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+
+                                                        <partial name="Partials/_DeleteIngredientModal" model="ing" />
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (User.Identity?.IsAuthenticated == true && Model.OwnerId == ViewData["CurrentUserId"]?.ToString() && (Model.Status == "Draft" || Model.Status == "Initial"))
+                        {
+                            <button type="button" class="btn btn-sm btn-cb-primary mt-3" data-bs-toggle="modal" data-bs-target="#addIngredientModal">
+                                <i class="bi bi-plus-circle me-1"></i> Add Ingredient
+                            </button>
+
+                            <partial name="Partials/_AddIngredientModal" model="new RecipeIngredientViewModel()" />
+                        }
+
+                        <!-- Special Equipment -->
+                        @if (!string.IsNullOrWhiteSpace(Model.SpecialEquipment))
+                        {
+                            <div class="mt-4">
+                                <h5 class="fw-bold border-bottom pb-2 mb-3">Special Equipment</h5>
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <p class="mb-0" style="white-space: pre-wrap;">@Model.SpecialEquipment</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Nutrition Information -->
+                        @if (!string.IsNullOrWhiteSpace(Model.NutritionInfo))
+                        {
+                            <div class="mt-4">
+                                <h5 class="fw-bold border-bottom pb-2 mb-3">Nutrition Information</h5>
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <p class="mb-0" style="white-space: pre-wrap;">@Model.NutritionInfo</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="col-12 col-md-6">
+                        <h5 class="fw-bold border-bottom pb-2 mb-3">@Html.DisplayNameFor(m => m.Instructions)</h5>
+                        <div style="white-space: pre-wrap;">@Html.DisplayFor(m => m.Instructions)</div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Tips))
+                        {
+                            <div class="mt-4">
+                                <h6 class="fw-semibold">@Html.DisplayNameFor(m => m.Tips)</h6>
+                                <p style="white-space: pre-wrap;" class="mb-0">@Html.DisplayFor(m => m.Tips)</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mt-4">
+
+                        <div class="d-flex flex-wrap gap-2 order-1 order-md-1">
+                            @if (ViewData["CurrentUserId"] as string == Model.OwnerId && (Model.Status == "Draft" || Model.Status == "Initial"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-outline-cb-primary">
+                                    <i class="bi bi-pencil-square me-1"></i> Edit
+                                </a>
+                            }
+
+                            @if (User.IsInRole("Administrator") || ViewData["CurrentUserId"] as string == Model.OwnerId)
+                            {
+                                <a asp-action="MyRecipes" class="btn btn-light border shadow-sm">
+                                    <i class="bi bi-arrow-left me-1"></i> Back to My Recipes
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-action="Index" class="btn btn-light border shadow-sm">
+                                    <i class="bi bi-arrow-left me-1"></i> Back to All Recipes
+                                </a>
+                            }
+                        </div>
+
+                        <div class="order-2 order-md-2">
+                            @if (ViewData["CurrentUserId"] as string == Model.OwnerId)
+                            {
+                                <partial name="Partials/_StatusButtons" model="Model" />
+                            }
+                        </div>
+
+                        @* 
+                        <form asp-action="Delete" asp-route-id="@Model.ID" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash3 me-1"></i> Delete
+                            </button>
+                        </form> 
+                        *@
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

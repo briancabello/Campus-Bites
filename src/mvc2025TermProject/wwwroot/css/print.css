@@ -1,0 +1,83 @@
+﻿/* Campus Bites - Print Styles */
+
+/* Print View - Screen styles */
+.print-page {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Print media query */
+@media print {
+    /* Hide header/footer/nav from layout */
+    header, footer, nav {
+        display: none !important;
+    }
+
+    body {
+        border: 1px solid #000;
+        padding: 15px;
+        margin: 0;
+    }
+
+    .col-lg-6 {
+        width: 48%;
+        float: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+        .col-lg-6:first-child {
+            margin-right: 4%;
+        }
+
+    .row {
+        margin: 0;
+    }
+
+    .card-img-top {
+        height: 300px !important;
+    }
+
+    /* Hide buttons and extra elements */
+    .btn, .px-4.py-3 {
+        display: none;
+    }
+
+    /* Font sizes */
+    body {
+        font-size: 12px;
+    }
+
+    h5 {
+        font-size: 14px;
+    }
+
+    h6 {
+        font-size: 12px;
+    }
+
+        /* Reduce spacing for section headers */
+        h5.pb-2, h6.pb-2 {
+            padding-bottom: 0.25rem !important;
+        }
+
+        h5.mb-3, h6.mb-3 {
+            margin-bottom: 0.5rem !important;
+        }
+
+    /* Text wrapping */
+    [style*="white-space: pre-wrap"] {
+        white-space: pre-wrap !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Remove shadows for cleaner print */
+    .shadow-sm, .shadow {
+        box-shadow: none !important;
+    }
+
+    /* Prevent page breaks inside critical elements */
+    .card, .card-body, .ingredients-list, .form-check {
+        page-break-inside: avoid;
+    }
+}

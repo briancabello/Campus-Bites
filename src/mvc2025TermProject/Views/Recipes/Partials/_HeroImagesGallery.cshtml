@@ -1,0 +1,114 @@
+﻿@model mvc2025TermProject.Models.RecipeDetailsViewModel
+
+<div class="hero-images-section">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="main-image-container bg-light rounded-3 text-center position-relative">
+                @{
+                    var mainImage = Model.Images?.FirstOrDefault(i => i.IsMainImage == true);
+                    var hasMainImage = mainImage != null;
+                    var isMainApproved = mainImage?.IsApproved == true;
+                }
+
+                @if (hasMainImage)
+                {
+                    <!-- Main Image -->
+                    <div class="position-relative main-image-wrapper">
+                        <img src="@mainImage.FilePath"
+                             class="img-fluid rounded-3 w-100 h-400 @(isMainApproved ? "" : "opacity-50")"
+                             alt="@mainImage.AltText"
+                             style="object-fit: cover;" />
+
+                        @if (!isMainApproved)
+                        {
+                            <!-- Pending Approval Overlay -->
+                            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                                <div class="bg-dark bg-opacity-75 text-white rounded p-3 text-center">
+                                    <i class="bi bi-clock-history display-4 d-block mb-2"></i>
+                                    <strong>Pending Approval</strong>
+                                    <p class="mb-0 small">Image awaiting admin review</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="py-5">
+                        <i class="bi bi-images display-1 text-secondary"></i>
+                        <p class="text-muted mt-2">Image Not Available</p>
+                    </div>
+                }
+
+                <span class="position-absolute top-0 start-0 badge bg-primary m-3">
+                    <i class="bi bi-star-fill me-1"></i>Main Image
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thumbnail Images (6 slots) -->
+    <div class="row">
+        <div class="col-12">
+            <h6 class="fw-bold mb-3">More Images</h6>
+
+            <div class="row g-2">
+                @for (int i = 0; i < 6; i++)
+                {
+                    var thumbnail = Model.Images?.Where(img => img.IsMainImage != true).ElementAtOrDefault(i);
+                    var hasThumbnail = thumbnail != null;
+                    var isThumbnailApproved = thumbnail?.IsApproved == true;
+
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="position-relative">
+                            @if (hasThumbnail)
+                            {
+                                <!-- Thumbnail -->
+                                <div class="position-relative thumbnail-hover">
+                                    <img src="@thumbnail.FilePath"
+                                         class="img-fluid rounded border w-100 h-120 @(isThumbnailApproved ? "" : "opacity-50")"
+                                         alt="@thumbnail.AltText"
+                                         style="object-fit: cover;" />
+
+                                    @if (!isThumbnailApproved)
+                                    {
+                                        <!-- Small Pending Badge -->
+                                        <div class="position-absolute top-0 end-0 m-1">
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock"></i>
+                                            </span>
+                                        </div>
+                                    }                        
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Empty Thumbnail Slot -->
+                                <div class="bg-light rounded border d-flex flex-column align-items-center justify-content-center text-muted h-120">
+                                    <i class="bi bi-image fs-4 mb-1"></i>
+                                    <small class="text-center">No Image</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Images == null || !Model.Images.Any())
+{
+    <div class="alert alert-info mt-3 small" role="alert">
+        <i class="bi bi-info-circle"></i>
+        <strong>No images uploaded yet.</strong>
+        @if (User.Identity?.IsAuthenticated == true && ViewData["CurrentUserId"] as string == Model.OwnerId)
+        {
+            <span>Add images to make your recipe more appealing!</span>
+        }
+        else
+        {
+            <span>Recipe owner hasn't uploaded any images yet.</span>
+        }
+    </div>
+}

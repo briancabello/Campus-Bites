@@ -1,0 +1,229 @@
+﻿@model mvc2025TermProject.Models.Image
+
+@{
+    ViewData["Title"] = "Image Details";
+    string statusBadge = Model.IsApproved == true ? "badge bg-success" : "badge bg-warning text-dark";
+    string statusText = Model.IsApproved == true ? "Approved" : "Pending Review";
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <!-- Header Section -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 p-md-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+                    <span class="@statusBadge">@statusText</span>
+                    @if (Model.IsMainImage == true)
+                    {
+                        <span class="badge bg-primary">
+                            <i class="bi bi-star-fill me-1"></i>Main Image
+                        </span>
+                    }
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" asp-route-statusFilter="@(Model.IsApproved == true ? "Approved" : "Pending")"
+                       class="btn btn-light border shadow-sm">
+                        <i class="bi bi-arrow-left me-1"></i> Back to List
+                    </a>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="p-3 p-md-4">
+
+                <!-- TempData Messages -->
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <!-- Action Alert for Pending Images -->
+                @if (Model.IsApproved == false)
+                {
+                    <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <div>
+                            This image is <strong>awaiting your review</strong>. Please approve or reject it below.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        <div>
+                            This image was <strong>approved</strong> on @Model.ApprovedDate?.ToString("MMMM d, yyyy")
+                            by @(Model.ApprovedBy?.FirstName ?? "Admin") @(Model.ApprovedBy?.LastName ?? "")
+                        </div>
+                    </div>
+                }
+
+                <!-- Image Preview Section -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-lg-8">
+                        <div class="border rounded-3 p-3 bg-light">
+                            <h5 class="fw-bold mb-3">Image Preview</h5>
+                            <div class="text-center">
+                                <img src="@Model.FilePath"
+                                     class="img-fluid rounded border"
+                                     alt="@Model.AltText"
+                                     style="max-height: 500px; object-fit: contain;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="col-12 col-lg-4">
+                        <div class="border rounded-3 p-3 h-100">
+                            <h6 class="fw-bold mb-3">Quick Info</h6>
+
+                            <div class="mb-3">
+                                <div class="small text-muted mb-1">Recipe</div>
+                                <a asp-controller="Recipes" asp-action="Details" asp-route-id="@Model.RecipeId"
+                                   class="fw-semibold text-decoration-none text-color-eb">
+                                    @(Model.Recipe?.Name ?? "Unknown Recipe")
+                                    <i class="bi bi-box-arrow-up-right ms-1 small"></i>
+                                </a>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted mb-1">Uploaded By</div>
+                                <div class="fw-semibold">
+                                    @(Model.UploadedBy?.FirstName ?? "Unknown") @(Model.UploadedBy?.LastName ?? "")
+                                </div>
+                                <small class="text-muted">@Model.UploadedBy?.Email</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted mb-1">Upload Date</div>
+                                <div>@Model.UploadedDate?.ToString("MMMM d, yyyy")</div>
+                                <small class="text-muted">@Model.UploadedDate?.ToString("h:mm tt")</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="small text-muted mb-1">File Info</div>
+                                <div>
+                                    <span class="badge bg-light text-dark border">
+                                        @Model.FileType?.ToUpper()
+                                    </span>
+                                    <span class="badge bg-light text-dark border ms-1">
+                                        @((Model.FileSize ?? 0) / 1024) KB
+                                    </span>
+                                </div>
+                            </div>
+
+                            @if (Model.IsApproved == true && Model.ApprovedDate.HasValue)
+                            {
+                                <div class="mb-3 pt-3 border-top">
+                                    <div class="small text-muted mb-1">Approval Info</div>
+                                    <div>
+                                        <div class="fw-semibold text-success">
+                                            <i class="bi bi-check-circle me-1"></i>Approved
+                                        </div>
+                                        <small class="text-muted">
+                                            @Model.ApprovedDate?.ToString("MMM d, yyyy") by
+                                            @(Model.ApprovedBy?.FirstName ?? "Admin")
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Information -->
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="mb-2 text-muted small">File Name</div>
+                            <div class="fw-semibold text-break">@Model.FileName</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="border rounded-3 p-3 h-100">
+                            <div class="mb-2 text-muted small">File Path</div>
+                            <div class="text-break"><code>@Model.FilePath</code></div>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.AltText))
+                    {
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3">
+                                <div class="mb-2 text-muted small">Alternative Text</div>
+                                <div>@Model.AltText</div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3">
+                                <div class="mb-2 text-muted small">Description</div>
+                                <div>@Model.Description</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex gap-2 flex-wrap">
+                    @if (Model.IsApproved == false)
+                    {
+                        <!-- Approve Button (triggers modal for confirmation) -->
+                        <button type="button"
+                                class="btn btn-success shadow-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#approveModal"
+                                data-image-id="@Model.Id">
+                            <i class="bi bi-check-circle me-1"></i>Approve Image
+                        </button>
+
+                        <!-- Reject Button (triggers modal for confirmation) -->
+                        <button type="button"
+                                class="btn btn-danger shadow-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectModal"
+                                data-image-id="@Model.Id">
+                            <i class="bi bi-x-circle me-1"></i>Reject Image
+                        </button>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success mb-0 d-flex align-items-center" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            This image has been approved and is now visible to users.
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals (only for pending images) -->
+@if (Model.IsApproved == false)
+{
+    <partial name="Partials/_ApproveImageModal" />
+    <partial name="Partials/_RejectImageModal" />
+}

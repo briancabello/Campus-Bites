@@ -1,0 +1,230 @@
+﻿@model mvc2025TermProject.Models.IngredientDetailsAdminViewModel
+
+@{
+    ViewData["Title"] = "Ingredient Details (Admin)";
+
+    string status = Model.ReviewStatus ?? "Unknown";
+
+    string badgeClass =
+        status == "Approved" ? "badge bg-success" :
+        status == "Pending Approval" ? "badge bg-secondary" :
+        status == "Pending Update" ? "badge bg-warning text-dark" :
+        status == "Rejected" ? "badge bg-danger" :
+                                       "badge bg-light text-dark";
+
+    bool isPendingApproval = Model.RequestType == "New Ingredient" && status == "Pending Approval";
+    bool isPendingUpdate = Model.RequestType == "Update Request" && status == "Pending Update";
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 p-md-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+                    <span class="@badgeClass">@status</span>
+                </div>
+
+                <a asp-action="Index" asp-route-statusFilter="Pending" class="btn btn-light border shadow-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Review
+                </a>
+            </div>
+
+            <div class="p-3 p-md-4">
+
+                @if (isPendingApproval)
+                {
+                    <!-- PENDING APPROVAL -->
+                    <div class="row g-3">
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentName)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.CurrentName)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentType)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentType)</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentDescription)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentDescription)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedBy)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Actions -->
+                    <div class="d-flex gap-2 mt-3">
+                        <form asp-action="Approve" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.ID" />
+                            <button type="submit" class="btn btn-cb-primary">
+                                <i class="bi bi-check2-circle me-1"></i> Approve Ingredient
+                            </button>
+                        </form>
+
+                        @*
+                        <form asp-action="Reject" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.ID" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i> Reject Ingredient
+                            </button>
+                        </form>
+                        *@
+                    </div>
+                }
+                else if (isPendingUpdate)
+                {
+                    <!-- PENDING UPDATE -->
+                    <div class="row g-3">
+                        <!-- Proposed -->
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedName)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedName)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedType)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedType)</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedDescription)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedDescription)</div>
+                            </div>
+                        </div>
+
+                        <!-- Current -->
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentName)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.CurrentName)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentType)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentType)</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentDescription)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentDescription)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedBy)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Actions -->
+                    <div class="d-flex gap-2 mt-3">
+                        <form asp-action="Approve" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.ID" />
+                            <button type="submit" class="btn btn-cb-primary">
+                                <i class="bi bi-check2-circle me-1"></i> Approve Update
+                            </button>
+                        </form>
+
+                        @*
+                        <form asp-action="Reject" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@Model.ID" />
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-x-circle me-1"></i> Reject Update
+                            </button>
+                        </form>
+                        *@
+                    </div>
+                }
+                else
+                {
+                    <!-- APPROVED or REJECTED -->
+                    <div class="row g-3">
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentName)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.CurrentName)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentType)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentType)</div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CurrentDescription)</div>
+                                <div>@Html.DisplayFor(m => m.CurrentDescription)</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DECISION SUMMARY -->
+                    <div class="mt-4">
+                        <div class="border rounded-3 bg-light-subtle p-3 p-md-4">
+                            <h6 class="fw-bold mb-3 text-dark">
+                                <i class="bi bi-clipboard-check me-2 @(status == "Rejected" ? "text-danger" : "text-success")"></i>
+                                Decision Summary
+                            </h6>
+
+                            <div class="row g-3">
+                                <div class="col-12 col-md-2">
+                                    <div class="text-muted small">@Html.DisplayNameFor(m => m.ApprovedDate)</div>
+                                    <div class="fw-semibold">@Html.DisplayFor(m => m.ApprovedDate)</div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="text-muted small">@Html.DisplayNameFor(m => m.DecidedBy)</div>
+                                    <div class="fw-semibold">@Html.DisplayFor(m => m.DecidedBy)</div>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <div class="text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                    <div class="fw-semibold">@Html.DisplayFor(m => m.CreatedDate)</div>
+                                </div>
+                                <div class="col-12 col-md-3">
+                                    <div class="text-muted small">@Html.DisplayNameFor(m => m.CreatedBy)</div>
+                                    <div class="fw-semibold">@Html.DisplayFor(m => m.CreatedBy)</div>
+                                </div>
+                                <div class="col-12 col-md-2">
+                                    <div class="text-muted small">@Html.DisplayNameFor(m => m.LastModifiedDate)</div>
+                                    <div class="fw-semibold">@Html.DisplayFor(m => m.LastModifiedDate)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

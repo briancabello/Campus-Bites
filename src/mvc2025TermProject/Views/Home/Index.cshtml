@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="p-0">
+
+    <div class="container">
+        @* Banner *@
+        <div class="rounded-lgx overflow-hidden border-0 banner-bg-color mt-0 mt-md-4">
+            <div class="row g-0">
+
+                <div class="col-lg-7">
+                    <img src="~/img/broccoli-chicken.jpg" class="w-100" alt="Bowl Broccoli Chicken" />
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="p-4 p-md-5 d-flex flex-column justify-content-center h-100 position-relative">
+                        <h4 class="my-3">Easy Meals For Student Life</h4>
+                        <p class="fs-4 pe-0 pe-md-5 pb-3 pb-sm-5 pb-lg-0">
+                            Create, Share, and Discover Budget-Friendly Recipes
+                            Made by Students, For Students
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @* Tasty on a Budget *@
+        @if (Model.TastyOnBudget != null && Model.TastyOnBudget.Count > 0)
+        {
+            <section class="my-3 my-md-4">
+                <h5 class="fs-2 py-3 mb-0">Tasty on a Budget</h5>
+                <div class="row g-3">
+                    @foreach (var recipe in Model.TastyOnBudget)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <partial name="Partials/_RecipeCardPartial" model="recipe" />
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        @* Sweet & Savory Savings *@
+        @if (Model.SweetSavorySavings != null && Model.SweetSavorySavings.Count > 0)
+        {
+            <section class="my-3 my-md-4">
+                <h5 class="fs-2 py-3 mb-0">Sweet & Savory Savings</h5>
+                <div class="row g-3">
+                    @foreach (var recipe in Model.SweetSavorySavings)
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <partial name="Partials/_RecipeCardPartial" model="recipe" />
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        @* Popular Categories *@
+        @if (Model.PopularCategories != null && Model.PopularCategories.Count > 0)
+        {
+            <section class="my-3 my-md-4">
+                <h5 class="fs-2 py-3 mb-0">Popular Categories</h5>
+                <div class="row g-3">
+                    @foreach (var category in Model.PopularCategories)
+                    {
+                        <div class="col-6 col-md-4 col-lg-2">
+
+                            <a asp-controller="Browse" asp-action="Category" asp-route-id="@category.ID"
+                               class="card category-card h-100 border-0 shadow-sm text-dark">
+                                <div class="card-body text-center p-4">
+                                    <div class="category-icon mb-3">
+                                        <i class="bi bi-tag-fill display-6 text-color-eb"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold mb-2">@category.Name</h5>
+                                    <div class="category-stats">
+                                        <span class="badge bg-light text-dark">
+                                            <i class="bi bi-journal-text me-1"></i>@category.RecipeCount recipes
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+
+    <section class="bg-cta my-5 py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-6 col-lg-8 offset-xl-3 offset-lg-2 text-center py-4 py-md-5">
+
+                    <h2 class="fs-1 fw-bold text-dark mb-3">Got Something to Share?</h2>
+                    <p class="text-secondary mb-4">
+                        We’d love to hear from you! Whether it’s your favorite student recipe,
+                        a cooking idea, or feedback for our team, we’re listening.
+                    </p>
+                    <a asp-controller="Contact" asp-action="Index" class="btn btn-lg text-light border-0 btn-cb-primary">
+                        Send Us a Message
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="container">
+        @if (Model.ChefsPick != null && Model.ChefsPick.Count > 0)
+        {
+            <section class="my-3 my-md-4">
+                <h5 class="fs-2 py-3 mb-4 fw-bold">Chef's Picks</h5>
+                <div class="row g-3">
+                    @foreach (var recipe in Model.ChefsPick)
+                    {
+                        <div class="col-12 col-md-6">
+                            <partial name="Partials/_ChefsPickPartial" model="recipe" />
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (Model.LatestRecipes != null && Model.LatestRecipes.Count > 0)
+        {
+            <section class="my-3 my-md-4">
+                <h5 class="fs-2 py-3 mb-4 fw-bold">Latest Recipes</h5>
+                <div class="row g-3">
+                    @foreach (var recipe in Model.LatestRecipes)
+                    {
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <partial name="Partials/_RecipeCardPartial" model="recipe" />
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+
+        <div class="my-3 my-md-4">
+            <div class="text-center">
+                <a asp-controller="Browse" asp-action="Recipes" class="btn btn-outline-cb-primary">
+                    <i class="bi bi-collection me-1"></i> View All Recipes
+                </a>
+            </div>
+        </div>
+    </div>
+
+</section>

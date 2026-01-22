@@ -1,0 +1,53 @@
+﻿@model mvc2025TermProject.Models.RecipeIngredientDetailViewModel
+
+@{
+    var modalId = $"deleteIngredientModal-{Model.IngredientId}";
+}
+
+<div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold text-dark">Remove Ingredient</h5>
+                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-3">
+                    Are you sure you want to remove this ingredient from the recipe?
+                </p>
+
+                <div class="p-3 border rounded bg-light mb-3">
+                    <strong>@Model.Quantity @Model.Unit</strong> @Model.IngredientName
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <br />
+                        <span class="text-muted small">@Model.Notes</span>
+                    }
+                </div>
+                <div class="alert alert-warning small py-2 mb-0">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <strong>Note:</strong> This action cannot be undone.
+                </div>
+            </div>
+
+            <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                <a asp-action="Details" asp-route-id="@Model.RecipeId" class="btn btn-light border shadow-sm">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </a>
+
+                <form asp-action="RemoveIngredient" method="post" class="d-inline">
+                    <input type="hidden" name="recipeId" value="@Model.RecipeId" />
+                    <input type="hidden" name="ingredientId" value="@Model.IngredientId" />
+
+                    <button type="submit" class="btn btn-danger shadow-sm">
+                        <i class="bi bi-trash me-1"></i> Remove Ingredient
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

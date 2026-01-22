@@ -1,0 +1,50 @@
+﻿@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirm email";
+    var isError = Model.StatusMessage?.StartsWith("Error") == true;
+}
+
+<div class="container text-center my-5">
+    <section class="my-3 my-md-4">
+        <h2 class="fs-2 py-3 mb-3 fw-bold text-dark">
+            @(isError ? "Email confirmation issue" : "Welcome to Campus Bites!")
+        </h2>
+        <div class="mx-auto w-50">
+            <partial name="_StatusMessage" model="Model.StatusMessage" />
+        </div>
+        
+
+        @if (!isError)
+        {
+            <p class="fw-semibold mt-4 fs-5">
+                You’re officially part of a community built by students, for students.
+                <br />
+                Explore new recipes, share your own creations, and make student life a little tastier!
+            </p>
+
+            <a asp-area="Identity" asp-page="/Account/Login"
+               class="btn px-4 py-2 mt-3 text-white fw-semibold btn-cb-primary">
+                Login Now
+            </a>
+        }
+        else
+        {
+            <p class="text-muted mt-4 small">
+                Trouble confirming? Try the link again, or
+                <a id="resend-confirmation" asp-page="./ResendEmailConfirmation" class="text-decoration-none text-color-eb">
+                    resend the confirmation email
+                </a>.
+            </p>
+        }
+    </section>
+</div>
+
+
+@*
+<h1>Confirm</h1>
+
+<div>
+    <partial name="_StatusMessage" model="Model.StatusMessage" />
+</div>
+*@

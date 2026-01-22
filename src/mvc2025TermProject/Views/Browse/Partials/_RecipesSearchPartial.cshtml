@@ -1,0 +1,87 @@
+﻿@model mvc2025TermProject.Models.BrowseViewModel
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+
+                <form method="get" asp-action="Recipes" 
+                                   asp-route-keyword="@Model.Keyword"
+                                   asp-route-categoryId="@Model.SelectedCategoryId"
+                                   asp-route-startDate="@Model.StartDate"
+                                   asp-route-endDate="@Model.EndDate"
+                      class="row g-3 align-items-end"
+                >
+
+                    <!-- Keyword Search -->
+                    <div class="col-12 col-lg-4">
+                        <label class="form-label fw-semibold small text-dark mb-2">
+                            <i class="bi bi-search me-1"></i> Keyword
+                        </label>
+                        <input name="keyword" value="@Model.Keyword" class="form-control" placeholder="Search recipes by name or ingredients..." />
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="col-12 col-lg-2">
+                        <label class="form-label fw-semibold small text-dark mb-2">
+                            <i class="bi bi-tag me-1"></i> Category
+                        </label>
+                        <select name="categoryId" class="form-select">
+                            <option value="">All Categories</option>
+                            @foreach (var category in Model.Category)
+                            {
+                                <option value="@category.Value" selected="@(category.Value == Model.SelectedCategoryId?.ToString())">
+                                    @category.Text
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+                        <div class="row g-2">
+                            <!-- Start Date -->
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-dark mb-2">
+                                    <i class="bi bi-calendar-plus me-1"></i>Start Date
+                                </label>
+                                <input name="startDate" type="date" value="@Model.StartDate?.ToString("yyyy-MM-dd")" class="form-control" placeholder="From" />
+                            </div>
+
+                            <!-- End Date -->
+                            <div class="col-sm-6">
+                                <label class="form-label fw-semibold small text-dark mb-2">
+                                    <i class="bi bi-calendar-minus me-1"></i>End Date
+                                </label>
+                                <input name="endDate" type="date" value="@Model.EndDate?.ToString("yyyy-MM-dd")" class="form-control" placeholder="To" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-2">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-cb-primary flex-grow-1">
+                                <span class="d-md-none">Search</span>
+                                <i class="bi bi-search d-none d-md-inline"></i>
+                            </button>
+                            <a asp-action="Recipes" class="btn btn-outline-secondary flex-grow-1">
+                                <span class="d-md-none">Reset</span>
+                                <i class="bi bi-arrow-counterclockwise d-none d-md-inline"></i>
+                            </a>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Search Info -->
+                @if ((bool)(ViewData["HasSearch"] ?? false))
+                {
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Found @ViewData["TotalMatches"] recipe(s) matching your criteria
+                        </small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

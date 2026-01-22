@@ -1,0 +1,53 @@
+﻿@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<div class="container my-3 my-md-4 pb-5 h-100 d-flex align-items-center justify-content-center">
+    <div class="col-md-6">
+        <div class="card auth-card shadow-lg text-center">
+            <div class="auth-accent rounded-top"></div>
+
+            <div class="card-body p-4 p-md-5">
+                <div class="mb-4">
+                    <i class="bi bi-shield-lock-fill text-danger fs-1 mb-3"></i>
+                    <h4 class="fs-4 fw-bold mb-2 text-danger">@ViewData["Title"]</h4>
+                    <p class="text-muted mb-4">
+                        You don’t have permission to access this page or perform this action.
+                        Please make sure you’re signed in with the correct account.
+                    </p>
+                </div>
+
+                <hr class="my-4" />
+
+                <p class="text-muted mt-4 small">
+                    If you believe this is a mistake, please contact the site administrator or return to the homepage.
+                </p>
+
+                <div class="d-flex justify-content-center gap-3 small">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" class="text-decoration-none text-color-eb">
+                        Back to Home
+                    </a>
+                    <span class="text-muted">•</span>
+                    <a href="mailto:support@campusbites.ca" class="text-decoration-none text-color-eb">
+                        Contact Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*
+@page
+@model AccessDeniedModel
+@{
+    ViewData["Title"] = "Access denied";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">You do not have access to this resource.</p>
+</header>
+*@

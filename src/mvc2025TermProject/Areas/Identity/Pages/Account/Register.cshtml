@@ -1,0 +1,133 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container my-3 my-md-4 pb-5 h-100 d-flex align-items-center justify-content-center">
+    <div class="col-md-6">
+        <div class="card auth-card shadow-lg">
+            <div class="auth-accent rounded-top"></div>
+
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-5">
+                    <h4 class="fs-4 fw-bold text-uppercase text-center mt-3">Create your Campus Bites account</h4>
+                    <p class="text-muted mt-2 mb-4">
+                        Join a community of students sharing quick, affordable, and delicious recipes.
+                        Sign up below to get started!
+                    </p>
+                </div>
+
+                <section>
+
+                    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <!-- E2 ADDITIONAL FIELDS - Personal Information -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="John" />
+                                    <label asp-for="Input.FirstName">First Name</label>
+                                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Doe" />
+                                    <label asp-for="Input.LastName">Last Name</label>
+                                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.MiddleName" class="form-control" autocomplete="additional-name" placeholder="Middle name (optional)" />
+                            <label asp-for="Input.MiddleName">Middle Name (Optional)</label>
+                            <span asp-validation-for="Input.MiddleName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="(123) 456-7890" />
+                            <label asp-for="Input.PhoneNumber">Phone Number</label>
+                            <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.DateOfBirth" class="form-control" type="date" aria-required="true" />
+                            <label asp-for="Input.DateOfBirth">Date of Birth</label>
+                            <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                        <!-- Address Information -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.StreetAddress" class="form-control" autocomplete="street-address" aria-required="true" placeholder="123 Main St" />
+                            <label asp-for="Input.StreetAddress">Street Address</label>
+                            <span asp-validation-for="Input.StreetAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Municipality" class="form-control" autocomplete="address-level2" aria-required="true" placeholder="City/Town" />
+                            <label asp-for="Input.Municipality">Municipality / City</label>
+                            <span asp-validation-for="Input.Municipality" class="text-danger"></span>
+                        </div>
+
+                        <!-- Province and Postal Code -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.Province" class="form-control" autocomplete="address-level1" aria-required="true" placeholder="Province" />
+                                    <label asp-for="Input.Province">Province</label>
+                                    <span asp-validation-for="Input.Province" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Input.PostalCode" class="form-control" autocomplete="postal-code" aria-required="true" placeholder="A1A 1A1" />
+                                    <label asp-for="Input.PostalCode">Postal Code</label>
+                                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Original Identity Fields -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                            <label asp-for="Input.Email">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <label asp-for="Input.Password">Password</label>
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                            <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <button id="registerSubmit" type="submit" class="mt-4 w-100 btn btn-lg btn-cb-primary text-white">Register</button>
+                    </form>
+
+                    <p class="text-center text-muted mt-4 small">
+                        By signing up, you agree to our <a href="#" class="text-decoration-none text-color-eb">terms of use</a>
+                        and <a href="#" class="text-decoration-none text-color-eb">privacy policy</a>.
+                    </p>
+
+                    <hr class="my-4" />
+
+                    <p class="text-center text-muted">
+                        Already have an account? <a class="fw-bold text-decoration-none text-color-eb" asp-area="Identity" asp-page="/Account/Login">Log in</a>
+                    </p>
+                </section>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

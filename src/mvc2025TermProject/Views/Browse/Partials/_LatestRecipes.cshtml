@@ -1,0 +1,60 @@
+﻿@model List<mvc2025TermProject.Models.RecipeCardViewModel>
+
+<div class="row g-4">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var recipe in Model)
+        {
+            <div class="col-xl-4 col-lg-6">
+                <a asp-controller="Browse" asp-action="Recipe" asp-route-id="@recipe.ID">
+                    <div class="card h-100 border-0 bg-transparent shadow-sm recipe-card">
+                        <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center rounded-top h-300">
+                            @if (recipe.Images?.Any() == true)
+                            {
+                                var mainImage = recipe.Images.First();
+                                <img src="@mainImage.FilePath" class="img-fluid h-100 w-100 rounded-top" style="object-fit: cover;" alt="@mainImage.AltText" title="@mainImage.Description">
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                    <i class="bi bi-image text-secondary opacity-50 display-6 mb-2"></i>
+                                    <span class="text-secondary fw-semibold d-block small">Image Not Available</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Recipe -->
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <span class="badge rounded-pill bg-primary">@recipe.CategoryName</span>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>@recipe.CreatedDate?.ToString("MMM dd")
+                                </small>
+                            </div>
+                            <h5 class="card-title fw-bold text-dark">
+                                @recipe.Name
+                            </h5>
+                            <div class="recipe-meta text-muted small mb-3">
+                                <div class="d-flex gap-3">
+                                    <span><i class="bi bi-clock me-1"></i>@recipe.TotalTime</span>
+                                    <span><i class="bi bi-people me-1"></i>@recipe.Servings servings</span>
+                                </div>
+                                <div class="mt-2">
+                                    <i class="bi bi-person me-1"></i>By @recipe.OwnerName
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-4">
+            <i class="bi bi-journal-plus display-1 text-muted"></i>
+            <h4 class="mt-3 text-muted">No recipes available yet</h4>
+            <p class="text-muted">Be the first to share your recipe with the community!</p>
+        </div>
+    }
+</div>

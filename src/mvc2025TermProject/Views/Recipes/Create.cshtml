@@ -1,0 +1,141 @@
+﻿@model mvc2025TermProject.Models.RecipeCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Recipe";
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="p-3 p-md-4 border-bottom">
+                <!-- Desktop: Title left, Date right -->
+                <div class="d-none d-md-flex align-items-center justify-content-between mb-1">
+                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+
+                    <div class="text-muted fw-medium">
+                        <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, MMMM d, yyyy")
+                    </div>
+                </div>
+
+                <!-- Mobile: Just Title -->
+                <div class="d-md-none">
+                    <h3 class="fw-bold text-dark mb-1">@ViewData["Title"]</h3>
+                </div>
+
+                <!-- Notice (always below) -->
+                <div class="text-muted small">
+                    This recipe will be saved as <strong>INITIAL</strong>
+                    <span class="ms-1 d-none d-sm-inline" data-bs-toggle="tooltip" title="Basic recipe created - add ingredients to make it a Draft">
+                        <i class="bi bi-question-circle text-muted"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="p-3 p-md-4">
+                <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g., Classic Pancakes" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label fw-semibold"></label>
+                        @* <select asp-for="CategoryId" class="form-select" asp-items="@(ViewData["CategoryId"] as SelectList)"> *@
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                            <option value="">-- Choose a Category --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Instructions" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Instructions" class="form-control" rows="6"
+                                  placeholder="Write clear, step-by-step instructions."></textarea>
+                        <span asp-validation-for="Instructions" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tips" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Tips" class="form-control" rows="3"
+                                  placeholder="Optional: Notes (max 1000 chars)."></textarea>
+                        <span asp-validation-for="Tips" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Cooking Details -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label asp-for="PreparationTime" class="form-label fw-semibold"></label>
+                            <input asp-for="PreparationTime" class="form-control" placeholder="Minutes" />
+                            <span asp-validation-for="PreparationTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="CookTime" class="form-label fw-semibold"></label>
+                            <input asp-for="CookTime" class="form-control" placeholder="Minutes" />
+                            <span asp-validation-for="CookTime" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="TemperatureFahrenheit" class="form-label fw-semibold"></label>
+                            <input asp-for="TemperatureFahrenheit" class="form-control" placeholder="°F (-20 to 550)" />
+                            <span asp-validation-for="TemperatureFahrenheit" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Servings" class="form-label fw-semibold"></label>
+                            <input asp-for="Servings" class="form-control" placeholder="Number of people" />
+                            <span asp-validation-for="Servings" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Nutrition Information -->
+                    <div class="mb-3">
+                        <label asp-for="NutritionInfo" class="form-label fw-semibold"></label>
+                        <textarea asp-for="NutritionInfo" class="form-control" rows="3"
+                                    placeholder="Optional: Nutritional information (calories, protein, carbs, etc.)"></textarea>
+                        <span asp-validation-for="NutritionInfo" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Special Equipment -->
+                    <div class="mb-3">
+                        <label asp-for="SpecialEquipment" class="form-label fw-semibold"></label>
+                        <textarea asp-for="SpecialEquipment" class="form-control" rows="2"
+                                    placeholder="Optional: Special equipment needed (blender, mixer, etc.)"></textarea>
+                        <span asp-validation-for="SpecialEquipment" class="text-danger small"></span>
+                    </div>
+
+                    <!-- YouTube Video Link -->
+                    <div class="mb-3">
+                        <label asp-for="YouTubeVideoLink" class="form-label fw-semibold"></label>
+                        <input asp-for="YouTubeVideoLink" class="form-control"
+                                placeholder="Optional: https://youtube.com/watch?v=..." />
+                        <span asp-validation-for="YouTubeVideoLink" class="text-danger small"></span>
+                    </div>
+
+                    <div class="p-3 border rounded-3 bg-white shadow-sm mt-3">
+                        <small class="text-muted">
+                            <strong class="d-block mb-1 text-dark">What's next?</strong>
+                            After creating, you'll go directly to your recipe page where you can start adding ingredients and images.
+                            Your recipe will automatically become a <strong>Draft</strong> once you add your first ingredient.
+                        </small>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-cb-primary shadow-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Create
+                        </button>
+                        <a asp-action="MyRecipes" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,27 @@
+﻿@model mvc2025TermProject.Models.ImageAdminViewModel
+
+<div class="p-3 p-md-4 border-bottom bg-light">
+    <div class="row g-2">
+        <div class="col-12 col-md-auto">
+            <a asp-action="Index" asp-route-statusFilter="Pending"
+               class="btn @(Model.StatusFilter == "Pending" ? "btn-cb-primary" : "btn-outline-secondary") w-100">
+                <i class="bi bi-clock-history me-1"></i>
+                Pending (@Model.PendingCount)
+            </a>
+        </div>
+        <div class="col-12 col-md-auto">
+            <a asp-action="Index" asp-route-statusFilter="Approved"
+               class="btn @(Model.StatusFilter == "Approved" ? "btn-cb-primary" : "btn-outline-secondary") w-100">
+                <i class="bi bi-check-circle me-1"></i>
+                Approved (@Model.ApprovedCount)
+            </a>
+        </div>
+        <div class="col-12 col-md-auto">
+            <a asp-action="Index" asp-route-statusFilter="All"
+               class="btn @(Model.StatusFilter == "All" ? "btn-cb-primary" : "btn-outline-secondary") w-100">
+                <i class="bi bi-images me-1"></i>
+                All Images (@Model.TotalCount)
+            </a>
+        </div>
+    </div>
+</div>

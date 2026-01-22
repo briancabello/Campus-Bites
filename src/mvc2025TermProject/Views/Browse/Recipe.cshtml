@@ -1,0 +1,305 @@
+﻿@model mvc2025TermProject.Models.RecipeDetailsViewModel
+
+@{
+    ViewData["Title"] = Model.Name ?? "Recipe Details";
+}
+
+@functions {
+    private bool ContainsNuts(string ingredientName)
+    {
+        if (string.IsNullOrEmpty(ingredientName))
+            return false;
+
+        var nutKeywords = new[]
+        {
+
+            "almond", "walnut", "pecan", "cashew", "pistachio", "hazelnut",
+            "macadamia", "brazil nut", "pine nut", "chestnut",
+
+            "peanut",
+
+            "nut butter", "nut oil", "nut flour", "nutella", "marzipan",
+
+            " nuts", "nut "
+        };
+
+        var safeKeywords = new[]
+        {
+            "nutmeg", "coconut", "water chestnut", "donut", "doughnut"
+        };
+
+        return nutKeywords.Any(nut =>
+            ingredientName.Contains(nut, StringComparison.OrdinalIgnoreCase)) &&
+           !safeKeywords.Any(safe =>
+            ingredientName.Contains(safe, StringComparison.OrdinalIgnoreCase));
+    }
+}
+
+<section class="p-0">
+    <div class="container">
+        <!-- breadcrumb -->
+        <section class="py-3 py-md-4">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Home" asp-action="Index" class="text-color-eb">Home</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Browse" asp-action="Index" class="text-color-eb">Browse</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a asp-controller="Browse" asp-action="Recipes" class="text-color-eb">All Recipes</a>
+                            </li>
+                            @if (!string.IsNullOrEmpty(Model.CategoryName))
+                            {
+                                <li class="breadcrumb-item">
+                                    <a asp-controller="Browse" asp-action="Category" asp-route-id="@Model.CategoryId" class="text-color-eb">@Model.CategoryName</a>
+                                </li>
+                            }
+                            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+                        </ol>
+                    </nav>
+
+                    <h1 class="fw-bold mb-2 text-dark">@Model.Name</h1>
+
+                    <div class="d-flex flex-wrap align-items-center text-muted small mb-2 gap-2">
+                        @if (!string.IsNullOrEmpty(Model.CategoryName))
+                        {
+                            <div>
+                                <span>@Model.CategoryName</span>
+                            </div>
+                            <div>•</div>
+                        }
+                        <div><i class="bi bi-person-circle me-1"></i> @Model.OwnerName</div>
+                        <div>•</div>
+                        <div><i class="bi bi-calendar-event me-1"></i> Created @Model.CreatedDate</div>
+                        @if (Model.LastModifiedDate != null)
+                        {
+                            <div>•</div>
+                            <div><i class="bi bi-clock-history me-1"></i> Updated @Model.LastModifiedDate</div>
+                        }
+                    </div>
+
+                    <hr class="my-2" />
+
+                    <!-- FUTURE : ADD DESCRIPTION FOR THE RECIPE -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipe Details -->
+        <section class="py-3 py-md-4">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-img-top position-relative bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center h-500">
+                            @if (Model.Images?.Any(img => img.IsApproved == true) == true)
+                            {
+                                var approvedImages = Model.Images.Where(img => img.IsApproved == true).ToList();
+                                var mainImage = approvedImages.FirstOrDefault(img => img.IsMainImage == true) ?? approvedImages.First();
+
+                                <!-- Main Image -->
+                                <img src="@mainImage.FilePath" class="img-fluid h-100 w-100" style="object-fit: contain;" alt="@mainImage.AltText" title="@mainImage.Description">
+
+                                <!-- Image Count Badge if Multiple Images -->
+                                @if (approvedImages.Count > 1)
+                                {
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-dark bg-opacity-75">
+                                            <i class="bi bi-images me-1"></i>@approvedImages.Count
+                                        </span>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-center">
+                                    <i class="bi bi-image text-secondary opacity-50 display-1 mb-3"></i>
+                                    <span class="text-secondary fw-semibold d-block fs-5">Image Not Available</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Image Thumbnail Gallery -->
+                        @if (Model.Images?.Count(img => img.IsApproved == true) > 1)
+                        {
+                            <div class="px-4 py-3 border-top">
+                                <h6 class="fw-bold mb-3">More Images</h6>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    @foreach (var image in Model.Images.Where(img => img.IsApproved == true))
+                                    {
+                                        <div class="thumbnail-hover" style="width: 120px;">
+                                            <img src="@image.FilePath"
+                                                 class="rounded border w-100 h-120"
+                                                 style="object-fit: cover; cursor: pointer;"
+                                                 alt="@image.AltText"
+                                                 title="@image.Description"
+                                                 onclick="switchMainImage(this, '@image.FilePath', '@image.AltText', '@image.Description')">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="card-body p-4">
+                            <div class="px-3 px-md-4 pb-3 pb-md-4">
+                                <div class="d-flex flex-wrap justify-content-center text-center py-3 px-4 small fw-semibold text-muted text-uppercase">
+                                    <div class="mx-3 ">
+                                        <div>@Html.DisplayNameFor(m => m.PreparationTime)</div>
+                                        <div class="text-dark">@Html.DisplayFor(m => m.PreparationTime)</div>
+                                    </div>
+                                    @if (Model.CookTime != "N/A" && Model.CookTime != "0 min(s)")
+                                    {
+                                        <div class="mx-3">
+                                            <div>@Html.DisplayNameFor(m => m.CookTime)</div>
+                                            <div class="text-dark">@Html.DisplayFor(m => m.CookTime)</div>
+                                        </div>
+                                    }
+                                    <div class="mx-3">
+                                        <div>@Html.DisplayNameFor(m => m.TotalTime)</div>
+                                        <div class="text-dark">@Html.DisplayFor(m => m.TotalTime)</div>
+                                    </div>
+                                    @if (Model.TemperatureFahrenheit != "N/A")
+                                    {
+                                        <div class="mx-3">
+                                            <div>@Html.DisplayNameFor(m => m.TemperatureFahrenheit)</div>
+                                            <div class="text-dark">@Html.DisplayFor(m => m.TemperatureFahrenheit)</div>
+                                        </div>
+                                    }
+                                    <div class="mx-3">
+                                        <div>@Html.DisplayNameFor(m => m.Servings)</div>
+                                        <div class="text-dark">@Html.DisplayFor(m => m.Servings)</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- YouTube Video Link -->
+                            @if (!string.IsNullOrEmpty(Model.YouTubeVideoLink))
+                            {
+                                <div class="text-center mb-4">
+                                    <a href="@Model.YouTubeVideoLink" target="_blank" class="btn btn-outline-danger">
+                                        <i class="bi bi-youtube me-1"></i> Watch Video Tutorial
+                                    </a>
+                                </div>
+                            }
+
+                            <!-- Ingredients Column -->
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <h5 class="fw-bold pb-2 mb-3">Ingredients</h5>
+                                    @if (Model.Ingredients == null || !Model.Ingredients.Any())
+                                    {
+                                        <p class="text-muted">No ingredients listed.</p>
+                                    }
+                                    else
+                                    {
+                                        var nutIngredients = Model.Ingredients
+                                            .Where(ing => !string.IsNullOrEmpty(ing.IngredientName) && 
+                                                    ContainsNuts(ing.IngredientName))
+                                            .Select(ing => ing.IngredientName)
+                                            .Distinct()
+                                            .ToList();
+        
+                                        @if (nutIngredients.Any())
+                                        {
+                                            <div class="alert alert-warning small py-2 mb-3">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                                <strong>Allergy Notice:</strong> This recipe contains 
+                                                <strong>@string.Join(", ", nutIngredients)</strong>.
+                                            </div>
+                                        }
+
+                                        <div class="ingredients-list">
+                                            @foreach (var ingredient in Model.Ingredients)
+                                            {
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-grow-1">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input ingredient-checkbox" type="checkbox" id="ingredient-@ingredient.IngredientId" onchange="toggleIngredient(this)">
+                                                            <label class="form-check-label fw-semibold d-inline ingredient-label" for="ingredient-@ingredient.IngredientId">
+                                                                <span>@ingredient.Quantity @ingredient.Unit</span>
+                                                                <span>@ingredient.IngredientName</span>
+                                                                @if (!string.IsNullOrEmpty(ingredient.Notes))
+                                                                {
+                                                                    <span>@ingredient.Notes</span>
+                                                                }
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                    }
+
+                                    <!-- Special Equipment -->
+                                    @if (!string.IsNullOrEmpty(Model.SpecialEquipment))
+                                    {
+                                        <div class="mt-4">
+                                            <h6 class="fw-bold pb-2 mb-3">Special Equipment</h6>
+                                            <p class="mb-0" style="white-space: pre-wrap;">@Model.SpecialEquipment</p>
+                                        </div>
+                                    }
+
+                                    <!-- Nutrition Information -->
+                                    @if (!string.IsNullOrEmpty(Model.NutritionInfo))
+                                    {
+                                        <div class="mt-4">
+                                            <h6 class="fw-bold pb-2 mb-3">Nutrition Information</h6>
+                                            <p class="mb-0" style="white-space: pre-wrap;">@Model.NutritionInfo</p>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Instructions -->
+                                <div class="col-12 col-md-6">
+                                    <h5 class="fw-bold pb-2 mb-3">@Html.DisplayNameFor(m => m.Instructions)</h5>
+                                    <div style="white-space: pre-wrap;">@Html.DisplayFor(m => m.Instructions)</div>
+
+                                    @if (!string.IsNullOrWhiteSpace(Model.Tips))
+                                    {
+                                        <div class="mt-4">
+                                            <h6 class="fw-bold pb-2 mb-3">@Html.DisplayNameFor(m => m.Tips)</h6>
+                                            <p style="white-space: pre-wrap;" class="mb-0">@Html.DisplayFor(m => m.Tips)</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Share/Report/Print Buttons -->
+                            <div class="row mt-4 pt-4">
+                                <div class="col-12">
+                                    <partial name="Partials/_RecipeActions" model="Model" />
+
+                                    @{
+                                        var shareVM = ViewBag.ShareFormData as ShareRecipeViewModel ?? new ShareRecipeViewModel
+                                        {
+                                            RecipeId    = Model.ID,
+                                            RecipeName  = Model.Name,
+                                            Subject     = $"Recipe you might like: {Model.Name}",
+                                            Message     = $"I found this recipe and thought you might enjoy it\n\n{Model.Name}\n{Url.Action("Recipe", "Browse", new { id = Model.ID }, Context.Request.Scheme)}",
+                                            RecipeUrl   = Url.Action("Recipe", "Browse", new { id = Model.ID }, Context.Request.Scheme)!
+                                        };
+
+                                        var reportVM = ViewBag.ReportFormData as ReportRecipeViewModel ?? new ReportRecipeViewModel
+                                        {
+                                            RecipeId    = Model.ID,
+                                            RecipeName  = Model.Name,
+                                            RecipeUrl   = Url.Action("Recipe", "Browse", new { id = Model.ID }, Context.Request.Scheme)!
+                                        };
+                                    }
+
+                                    <partial name="Partials/_ShareRecipeModal" model="shareVM" />
+                                    <partial name="Partials/_ReportRecipeModal" model="reportVM" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>

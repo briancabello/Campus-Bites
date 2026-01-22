@@ -1,0 +1,44 @@
+﻿@model mvc2025TermProject.Models.RecipeCardViewModel
+
+<a asp-controller="Browse" asp-action="Recipe" asp-route-id="@Model.ID" class="text-dark">
+    <div class="card h-100 border-0 bg-transparent shadow-sm recipe-card">
+        <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center rounded-top h-350">
+            @{
+                var mainImage = Model.Images?.FirstOrDefault(i => i.IsApproved == true && i.IsMainImage == true);
+            }
+
+            @if (mainImage != null)
+            {
+                <img src="@mainImage.FilePath" class="img-fluid h-100 w-100 rounded-top" style="object-fit: cover;" alt="@mainImage.AltText" title="@mainImage.Description">
+            }
+            else
+            {
+                <div class="text-center">
+                    <i class="bi bi-image text-secondary opacity-50 display-6 mb-2"></i>
+                    <span class="text-secondary fw-semibold d-block small">Image Not Available</span>
+                </div>
+            }
+        </div>
+
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="badge rounded-pill bg-primary">@Model.CategoryName</span>
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>@Model.CreatedDate?.ToString("MMM dd")
+                </small>
+            </div>
+            <h5 class="card-title fw-bold text-dark">
+                @Model.Name
+            </h5>
+            <div class="recipe-meta text-muted small mb-3">
+                <div class="d-flex gap-3">
+                    <span><i class="bi bi-clock me-1"></i>@Model.TotalTime</span>
+                    <span><i class="bi bi-people me-1"></i>@Model.Servings servings</span>
+                </div>
+                <div class="mt-2">
+                    <i class="bi bi-person me-1"></i>By @Model.OwnerName
+                </div>
+            </div>
+        </div>
+    </div>
+</a>

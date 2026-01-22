@@ -1,0 +1,83 @@
+﻿<div class="d-flex flex-column px-4 py-3 border-bottom">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+
+        <div class="d-flex gap-3 align-items-center">
+            <!-- Status Filter Dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-outline-cb-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-funnel me-2"></i>
+                    @{
+                        var currentStatus = ViewData["CurrentStatus"]?.ToString();
+                    }
+                    <span>
+                        @(string.IsNullOrEmpty(currentStatus) ? "All" : currentStatus)
+                    </span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-action="Index" asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            All
+                            <span class="badge bg-primary ms-auto">@((ViewData["PendingCount"] as int? ?? 0) + (ViewData["ApprovedCount"] as int? ?? 0) + (ViewData["RejectedCount"] as int? ?? 0))</span>
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-action="Index" asp-route-statusFilter="Pending" asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            Pending <span class="badge bg-secondary text-white ms-auto">@ViewData["PendingCount"]</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-action="Index" asp-route-statusFilter="Approved" asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            Approved <span class="badge bg-success ms-auto">@ViewData["ApprovedCount"]</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" asp-action="Index" asp-route-statusFilter="Rejected" asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            Rejected <span class="badge bg-danger ms-auto">@ViewData["RejectedCount"]</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Search -->
+            <form asp-action="Index" method="get" class="d-flex gap-2">
+                <div class="input-group w-100">
+                    <input type="text" name="filterCriteria" value="@ViewData["SearchFilterCriteria"]"
+                           class="form-control" placeholder="Search" 
+                    />
+
+                    <button type="submit" class="btn btn-cb-primary">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                <a asp-action="Index" class="btn btn-light border text-dark">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Match Count -->
+    @if ((bool)ViewData["HasSearch"]!)
+    {
+        <div class="mt-2">
+            <small class="text-muted">
+                Found @ViewData["TotalMatches"] match(es)
+                @if (!string.IsNullOrEmpty(ViewData["SearchFilterCriteria"]?.ToString()))
+                {
+                    <text>for "@ViewData["SearchFilterCriteria"]"</text>
+                }
+
+                @if (!string.IsNullOrEmpty(ViewData["CurrentStatus"]?.ToString()))
+                {
+                    if (!string.IsNullOrEmpty(ViewData["SearchFilterCriteria"]?.ToString()))
+                    {
+                        <text> and </text>
+                    }
+                    <text>with status "@ViewData["CurrentStatus"]"</text>
+                }
+            </small>
+        </div>
+    }
+</div>

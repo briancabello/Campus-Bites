@@ -1,0 +1,89 @@
+﻿@model mvc2025TermProject.Models.ReportRecipeViewModel
+
+<div class="modal fade" id="reportRecipeModal" tabindex="-1" aria-labelledby="reportRecipeModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-lg shadow-lg overflow-hidden">
+            <div class="auth-accent"></div>
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold text-dark" id="reportRecipeModalLabel">
+                    <i class="bi bi-flag me-2"></i>Report Recipe: @Model?.RecipeName
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Browse" asp-action="Report" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <input type="hidden" asp-for="@Model!.RecipeId" />
+                    <input type="hidden" asp-for="@Model!.RecipeName" />
+                    <input type="hidden" asp-for="@Model!.RecipeUrl" />
+
+                    <div class="alert alert-warning small py-2 mb-3">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        <strong>Important:</strong> Please only report recipes that violate our community guidelines.
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Recipe URL</label>
+                        <div class="form-control bg-light">
+                            <small class="text-muted text-break">@Model?.RecipeUrl</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Reason" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Reason" class="form-control" rows="4" placeholder="Please describe the issue with this recipe..."></textarea>
+                        <span asp-validation-for="Reason" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ReporterName" class="form-label fw-semibold"></label>
+                        <input asp-for="ReporterName" class="form-control" placeholder="e.g. John Smith" />
+                        <span asp-validation-for="ReporterName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ReporterEmail" class="form-label fw-semibold"></label>
+                        <input asp-for="ReporterEmail" class="form-control" placeholder="e.g. john.smith@example.com" />
+                        <span asp-validation-for="ReporterEmail" class="text-danger"></span>
+                    </div>
+
+                    <div class="alert alert-light border small py-2 mb-0">
+                        <i class="bi bi-info-circle me-1"></i>
+                        <strong>What happens next:</strong>
+                        <ul class="mb-0 mt-2 ps-3">
+                            <li>An administrator will review your report</li>
+                            <li>You'll receive an email update when a decision is made</li>
+                            <li>The recipe will be investigated for policy violations</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <a asp-controller="Browse" asp-action="Recipe" asp-route-id="@Model!.RecipeId" class="btn btn-light border shadow-sm">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-warning shadow-sm">
+                        <i class="bi bi-flag-fill me-1"></i>Submit Report
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (ViewContext.ModelState.ContainsKey("Reason") ||
+      ViewContext.ModelState.ContainsKey("ReportRecipe.Reason") ||
+      ViewContext.ModelState.ContainsKey("ReporterName") ||
+      ViewContext.ModelState.ContainsKey("ReportRecipe.ReporterName") ||
+      ViewContext.ModelState.ContainsKey("ReporterEmail") ||
+      ViewContext.ModelState.ContainsKey("ReportRecipe.ReporterEmail"))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const reportModal = new bootstrap.Modal(document.getElementById('reportRecipeModal'));
+            reportModal.show();
+        });
+    </script>
+}

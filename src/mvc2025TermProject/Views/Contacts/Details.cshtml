@@ -1,0 +1,95 @@
+﻿@model mvc2025TermProject.Models.Contact
+
+@{
+    ViewData["Title"] = "Message Details";
+    var type = TempData["MessageType"] ?? "success";
+}
+
+<div class="container my-3 my-md-4">
+    <h4 class="fs-2">@ViewData["Title"]</h4>
+    <hr />
+
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @* @Html.DisplayNameFor(model => model.Name) *@
+            From
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class = "col-sm-2">
+            @* @Html.DisplayNameFor(model => model.Topic) *@
+            Topic
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Topic)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Subject)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Subject)
+        </dd>
+        <dt class = "col-sm-2">
+            @* @Html.DisplayNameFor(model => model.Message) *@
+            Message
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Message)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.SubmittedAt)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.SubmittedAt)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.IsRead)
+        </dt>
+        <dd class="col-sm-10 d-flex align-items-center gap-2">
+            @* @Html.DisplayFor(model => model.IsRead) *@
+            @if (Model.IsRead == true)
+            {
+                <span class="badge bg-success">Read</span>
+            }
+            else
+            {
+                <span class="badge bg-warning text-dark">Unread</span>
+            }
+
+            @if (TempData["Message"] != null)
+            {
+                <span class="text-success small">
+                    <i class="bi bi-check-circle me-1"></i>@TempData["Message"]
+                </span>
+            }
+        </dd>
+    </dl>
+
+    <div class="mt-3">
+        <form asp-action="ToggleRead" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            @if (Model.IsRead == true)
+            {
+                <button type="submit" class="btn btn-warning me-3">Mark as Unread</button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-success me-3">Mark as Read</button>
+            }
+        </form>
+
+        <a href="mailto:@Model.Email?subject=Re: @Model.Subject" class="btn btn-primary me-3">Reply</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger me-3">Delete</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+

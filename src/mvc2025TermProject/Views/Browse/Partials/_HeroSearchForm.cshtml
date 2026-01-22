@@ -1,0 +1,35 @@
+﻿@model mvc2025TermProject.Models.BrowseViewModel
+
+<h1 class="display-4 fw-bold mb-4">Discover Amazing Student Recipes</h1>
+
+<div class="hero-content mb-3">
+    <p class="lead mb-3">
+        Browse all the different types of recipes we've released. From comforting classics
+        to innovative twists on old favorites, you're sure to find something to satisfy every craving.
+    </p>
+
+    <p class="fw-semibold mb-3">
+        Looking for something specific, use our search tool!
+    </p>
+</div>
+
+<div class="mb-3">
+    <form method="get" asp-action="Recipes">
+        <div class="input-group shadow">
+            <input asp-for="Keyword"
+                   class="form-control border-0"
+                   placeholder="Search recipes by name or ingredients..."
+                   aria-label="Search recipes" 
+            />
+
+            <button type="submit" class="btn btn-cb-primary border-0 px-4">
+                <i class="bi bi-search me-2"></i>Search
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="mt-4 pt-3 border-top">
+    <i class="bi bi-calendar3 me-2"></i>
+    @DateTime.Now.ToString("dddd, MMMM d, yyyy")
+</div>

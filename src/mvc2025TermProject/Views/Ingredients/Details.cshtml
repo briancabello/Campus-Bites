@@ -1,0 +1,241 @@
+﻿@model mvc2025TermProject.Models.IngredientDetailViewModel
+
+@{
+    ViewData["Title"] = "Ingredient Details";
+
+    string statusBadge =
+        Model.Status == "Approved" ? "badge bg-success" :
+        Model.Status == "Pending Approval" ? "badge bg-secondary" :
+        Model.Status == "Pending Update" ? "badge bg-warning text-dark" :
+                                           "badge bg-danger";
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 p-md-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+                    <span class="@statusBadge">@Model.Status</span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-light border shadow-sm">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Ingredients
+                    </a>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="p-3 p-md-4">
+
+                @if (Model.Status == "Pending Approval")
+                {
+                    <!-- PENDING APPROVAL -->
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Name)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.Name)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Type)</div>
+                                <div>@Html.DisplayFor(m => m.Type)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Description)</div>
+                                <div>@Html.DisplayFor(m => m.Description)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedBy)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (Model.Status == "Approved")
+                {
+                    <!-- APPROVED -->
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Name)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.Name)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Type)</div>
+                                <div>@Html.DisplayFor(m => m.Type)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Description)</div>
+                                <div>@Html.DisplayFor(m => m.Description)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.ApprovedDate)</div>
+                                <div>@Html.DisplayFor(m => m.ApprovedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.DecidedBy)</div>
+                                <div>@Html.DisplayFor(m => m.DecidedBy)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.LastModifiedDate)</div>
+                                <div>@Html.DisplayFor(m => m.LastModifiedDate)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (Model.Status == "Pending Update")
+                {
+                    <!-- PENDING UPDATE -->
+                    <div class="row g-3">
+                        <!-- Proposed (Pending*) -->
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedName)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedName)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedType)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedType)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="badge bg-warning text-dark me-1">@Html.DisplayNameFor(m => m.ProposedDescription)</div>
+                                <div class="mt-2">@Html.DisplayFor(m => m.ProposedDescription)</div>
+                            </div>
+                        </div>
+
+                        <!-- Current -->
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">Current @Html.DisplayNameFor(m => m.Name)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.Name)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">Current @Html.DisplayNameFor(m => m.Type)</div>
+                                <div>@Html.DisplayFor(m => m.Type)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">Current @Html.DisplayNameFor(m => m.Description)</div>
+                                <div>@Html.DisplayFor(m => m.Description)</div>
+                            </div>
+                        </div>
+
+                        <!-- Meta -->
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.LastModifiedDate)</div>
+                                <div>@Html.DisplayFor(m => m.LastModifiedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.DecidedBy)</div>
+                                <div>@Html.DisplayFor(m => m.DecidedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <!-- REJECTED -->
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Name)</div>
+                                <div class="fw-semibold">@Html.DisplayFor(m => m.Name)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Type)</div>
+                                <div>@Html.DisplayFor(m => m.Type)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.Description)</div>
+                                <div>@Html.DisplayFor(m => m.Description)</div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.CreatedDate)</div>
+                                <div>@Html.DisplayFor(m => m.CreatedDate)</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="border rounded-3 p-3 h-100">
+                                <div class="mb-2 text-muted small">@Html.DisplayNameFor(m => m.DecidedBy)</div>
+                                <div>@Html.DisplayFor(m => m.DecidedBy)</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex gap-2 mt-3">
+                    <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-outline-cb-primary">
+                        <i class="bi bi-pencil-square me-1"></i> Edit
+                    </a>
+                    @*
+                    <form asp-action="Delete" asp-route-id="@Model.ID" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash3 me-1"></i> Delete
+                        </button>
+                    </form>
+                    *@
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

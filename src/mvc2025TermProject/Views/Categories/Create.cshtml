@@ -1,0 +1,41 @@
+﻿@model mvc2025TermProject.Models.CategoryFormFieldsViewModel
+@{
+    ViewData["Title"] = "Create Category";
+}
+
+<div class="container my-3 my-md-4">
+    <div class="position-relative">
+        <div class="auth-accent rounded-top"></div>
+
+        <div class="bg-white border shadow-sm overflow-hidden">
+
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 p-md-4 border-bottom">
+                <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+
+                <a asp-action="Index" class="btn btn-light border shadow-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Categories
+                </a>
+            </div>
+
+            <div class="p-3 p-md-4">
+                <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <partial name="_CategoryFormFields" model="Model" />
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-cb-primary shadow-sm">
+                            <i class="bi bi-plus-circle me-1"></i> Create
+                        </button>
+
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

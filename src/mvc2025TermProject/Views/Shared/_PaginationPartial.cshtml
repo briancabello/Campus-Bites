@@ -1,0 +1,78 @@
+﻿@{
+    string prevDisabled = !Model!.HasPreviousPage ? "disabled" : "";
+    string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    int totalItems = Model.TotalItemCount;
+    int startItem = (Model.PageIndex - 1) * Model.PageSize + 1;
+    int endItem = Math.Min(Model.PageIndex * Model.PageSize, totalItems);
+
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-4 py-3 border-top gap-2">
+    <!--
+        MOBILE: Showing on BOTTOM
+        DESKTOP: Showing on LEFT
+    -->
+    <div class="text-muted small order-2 order-md-1 text-center text-md-start">
+        Showing @startItem to @endItem of @totalItems entries
+    </div>
+
+    <!--
+        MOBILE: Pagination on TOP
+        DESKTOP: Pagination on RIGHT
+    -->
+    <nav aria-label="Ingredients pagination" class="order-1 order-md-2">
+        <ul class="pagination pagination-sm mb-0 justify-content-center">
+            <!-- Previous Page -->
+            <li class="page-item @prevDisabled">
+                <a class="page-link"
+                   asp-action="@currentAction"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                    <span class="d-none d-sm-inline">Previous</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-left"></i></span>
+                </a>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">
+                            @i
+                            <span class="visually-hidden">(current)</span>
+                        </span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="@currentAction"
+                           asp-route-pageNumber="@i"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+
+            <!-- Next Page -->
+            <li class="page-item @nextDisabled">
+                <a class="page-link"
+                   asp-action="@currentAction"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                    <span class="d-none d-sm-inline">Next</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-right"></i></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

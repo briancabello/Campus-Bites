@@ -1,0 +1,120 @@
+﻿@model mvc2025TermProject.Models.BrowseViewModel
+
+@{
+    ViewData["Title"] = "Recipes";
+}
+
+<div class="container">
+    <!-- breadcrumb -->
+    <section class="py-3 py-md-4">
+        <div class="row">
+            <div class="col-12">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Home" asp-action="Index" class="text-color-eb">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a asp-controller="Browse" asp-action="Index" class="text-color-eb">Browse</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">All Recipes</li>
+                    </ol>
+                </nav>
+
+                <div class="d-none d-md-flex align-items-center justify-content-between mb-1">
+                    <h1 class="display-6 fw-bold text-dark mb-2">@ViewData["Title"]</h1>
+
+                    <div class="text-muted fw-medium">
+                        <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, MMMM d, yyyy")
+                    </div>
+                </div>
+
+                <!-- Mobile: Just Title -->
+                <div class="d-md-none">
+                    <h1 class="display-6 fw-bold text-dark mb-2">@ViewData["Title"]</h1>
+                </div>
+
+                <small class="text-muted">Browse all recipes from our community</small>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="py-1 py-md-2">
+        <partial name="Partials/_RecipesSearchPartial" model="Model" />
+
+        <div class="recipe-collection">
+            @if (Model.SearchResults != null && Model.SearchResults.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var recipe in Model.SearchResults)
+                    {
+                        <div class="col-xl-4 col-lg-6">
+                            <a asp-controller="Browse" asp-action="Recipe" asp-route-id="@recipe.ID" class="text-decoration-none">
+                                <div class="card recipe-card h-100 border-0 shadow-sm">
+                                    <!-- Image Section -->
+                                    <div class="card-img-top bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center rounded-top h-300">
+                                        @if (recipe.Images?.Any() == true)
+                                        {
+                                            var mainImage = recipe.Images.First();
+                                            <img src="@mainImage.FilePath" class="img-fluid h-100 w-100 rounded-top" style="object-fit: cover;" alt="@mainImage.AltText" title="@mainImage.Description">
+                                        }
+                                        else
+                                        {
+                                            <div class="text-center">
+                                                <i class="bi bi-image text-secondary opacity-50 display-6 mb-2"></i>
+                                                <span class="text-secondary fw-semibold d-block small">Image Not Available</span>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start mb-3">
+                                            <span class="badge rounded-pill bg-primary">@recipe.CategoryName</span>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock me-1"></i>@recipe.CreatedDate?.ToString("MMM dd")
+                                            </small>
+                                        </div>
+                                        <h5 class="card-title fw-bold text-dark">
+                                            @recipe.Name
+                                        </h5>
+                                        <div class="recipe-meta text-muted small mb-3">
+                                            <div class="d-flex gap-3">
+                                                <span><i class="bi bi-clock me-1"></i>@recipe.TotalTime</span>
+                                                <span><i class="bi bi-people me-1"></i>@recipe.Servings servings</span>
+                                            </div>
+                                            <div class="mt-2">
+                                                <i class="bi bi-person me-1"></i>By @recipe.OwnerName
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-5">
+                    <partial name="_SearchPaginationPartial" model="Model.SearchResults"
+                             asp-route-keyword="@Model.Keyword"
+                             asp-route-categoryId="@Model.SelectedCategoryId"
+                             asp-route-startDate="@Model.StartDate"
+                             asp-route-endDate="@Model.EndDate" 
+                    />
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted"></i>
+                    <h3 class="mt-3 text-muted">No recipes found</h3>
+                    <p class="text-muted mb-4">Try adjusting your search criteria or browse all recipes</p>
+                    <a asp-controller="Browse" asp-action="Recipes" class="btn btn-cb-primary">
+                        <i class="bi bi-list-ul me-1"></i> Browse All Recipes
+                    </a>
+                </div>
+            }
+        </div>
+    </section>
+</div>

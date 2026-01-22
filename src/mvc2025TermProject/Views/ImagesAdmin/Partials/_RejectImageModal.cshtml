@@ -1,0 +1,83 @@
+﻿@model mvc2025TermProject.Models.Image
+
+@{
+    var modalId = $"rejectModal-{Model.Id}";
+}
+
+<div class="modal fade" id="@modalId" tabindex="-1" aria-hidden="true"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-lg shadow-lg overflow-hidden">
+            <div class="auth-accent"></div>
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold text-dark">Reject Image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form asp-controller="ImagesAdmin" asp-action="Reject" method="post">
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="alert alert-warning small py-2 mb-3">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        This will permanently delete the image and notify the owner.
+                    </div>
+
+                    <!-- Recipe Info -->
+                    <div class="mb-3">
+                        <strong>Recipe:</strong> @Model.Recipe?.Name
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="mb-3 text-center">
+                        <img src="@Model.FilePath"
+                             class="img-fluid rounded border h-150"
+                             alt="@Model.AltText"
+                             style="object-fit: cover;">
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.AltText))
+                    {
+                        <div class="mb-3 text-center">
+                            <span class="text-muted small">"@Model.AltText"</span>
+                        </div>
+                    }
+
+                    <!-- Rejection Reason -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Rejection Reason (Optional)</label>
+                        <textarea name="rejectionReason"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="e.g., Inappropriate content, poor quality, does not match recipe, etc."></textarea>
+                        <div class="form-text">
+                            This reason will be included in the notification email sent to the recipe owner.
+                        </div>
+                    </div>
+
+                    @if (Model.IsMainImage == true)
+                    {
+                        <div class="alert alert-info py-2 mb-2 small" role="alert">
+                            <i class="bi bi-star-fill me-1"></i>
+                            <strong>Note:</strong> This is the main image for the recipe.
+                        </div>
+                    }
+
+                    <div class="alert alert-danger small py-2 mb-0">
+                        <i class="bi bi-exclamation-triangle me-1"></i>
+                        <strong>Warning:</strong> This action cannot be undone.
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <button type="button" class="btn btn-light border shadow-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger shadow-sm">
+                        <i class="bi bi-trash me-1"></i>Reject & Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

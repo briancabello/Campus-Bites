@@ -1,0 +1,91 @@
+﻿@model mvc2025TermProject.Models.Ingredient
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Ingredient</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsApproved" class="control-label"></label>
+                <input asp-for="IsApproved" class="form-control" />
+                <span asp-validation-for="IsApproved" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DecidedBy" class="control-label"></label>
+                <input asp-for="DecidedBy" class="form-control" />
+                <span asp-validation-for="DecidedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PendingName" class="control-label"></label>
+                <input asp-for="PendingName" class="form-control" />
+                <span asp-validation-for="PendingName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PendingType" class="control-label"></label>
+                <input asp-for="PendingType" class="form-control" />
+                <span asp-validation-for="PendingType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PendingDescription" class="control-label"></label>
+                <input asp-for="PendingDescription" class="form-control" />
+                <span asp-validation-for="PendingDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IsPendingModification" class="control-label"></label>
+                <input asp-for="IsPendingModification" class="form-control" />
+                <span asp-validation-for="IsPendingModification" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastModifiedDate" class="control-label"></label>
+                <input asp-for="LastModifiedDate" class="form-control" />
+                <span asp-validation-for="LastModifiedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ApprovedDate" class="control-label"></label>
+                <input asp-for="ApprovedDate" class="form-control" />
+                <span asp-validation-for="ApprovedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

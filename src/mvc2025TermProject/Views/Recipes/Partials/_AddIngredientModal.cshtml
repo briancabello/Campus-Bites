@@ -1,0 +1,80 @@
+﻿@model mvc2025TermProject.Models.RecipeIngredientViewModel
+
+@{
+    var recipeId = ViewData["RecipeId"] as int?;
+}
+
+<div class="modal fade" id="addIngredientModal" tabindex="-1" aria-labelledby="addIngredientModalLabel"
+     aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+
+            <div class="modal-header bg-light border-0">
+                <h5 class="modal-title fw-bold text-dark" id="addIngredientModalLabel">Add Ingredient</h5>
+                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+
+            <form asp-action="AddIngredient" method="post" class="needs-validation" novalidate>
+                <input type="hidden" name="RecipeId" value="@recipeId" />
+
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- Ingredient selection -->
+                    <div class="mb-3">
+                        <label asp-for="IngredientId" class="form-label fw-semibold"></label>
+                        <select asp-for="IngredientId" class="form-select shadow-sm"
+                                asp-items="ViewBag.AvailableIngredients">
+                            <option value="">-- Select a Ingredient --</option>
+                        </select>
+                        <span asp-validation-for="IngredientId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Quantity / Unit -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Quantity" class="form-label fw-semibold"></label>
+                            <input asp-for="Quantity" class="form-control shadow-sm"
+                                   step="0.01" min="0.01" placeholder="e.g. 1.5 or 2" />
+                            <span asp-validation-for="Quantity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Unit" class="form-label fw-semibold"></label>
+                            <input asp-for="Unit" class="form-control shadow-sm"
+                                   placeholder="e.g. cup, tsp, g, mL" />
+                            <span asp-validation-for="Unit" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="mt-3">
+                        <label asp-for="Notes" class="form-label fw-semibold"></label>
+                        <input asp-for="Notes" class="form-control shadow-sm"
+                               placeholder="Optional: chopped, diced, room temperature, etc." />
+                        <span asp-validation-for="Notes" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 px-4 pb-4 pt-2">
+                    <a asp-action="Details" asp-route-id="@recipeId" class="btn btn-light border shadow-sm">
+                        <i class="bi bi-x-circle me-1"></i> Cancel
+                    </a>
+
+                    <button type="submit" class="btn btn-cb-primary shadow-sm">
+                        <i class="bi bi-check2-circle me-1"></i> Add Ingredient
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (!ViewContext.ModelState.IsValid && ViewContext.ModelState.ContainsKey("IngredientId"))
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = new bootstrap.Modal(document.getElementById('addIngredientModal'));
+            modal.show();
+        });
+    </script>
+}

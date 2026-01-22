@@ -1,0 +1,97 @@
+﻿@model mvc2025TermProject.Models.Contact
+
+@{
+    ViewData["Title"] = "Contact Our Team";
+}
+
+<div class="container">
+    <section class="my-3 my-md-4">
+        <h5 class="fs-2 py-3 mb-0">@ViewData["Title"]</h5>
+        <hr />
+
+        <div class="row">
+            <div class="col-md-4">
+                CONTENT HERE
+            </div>
+
+            <div class="col-md-8">
+                <div class="contact-intro mb-4">
+                    <p class="fs-6 text-justify">
+                        <span class="fw-bold">We’re all about connection and creativity!</span>
+                        Got a question, suggestion, or recipe idea you’d like to share?
+                        We’d love to hear from you. Someone from the
+                        <span class="fw-bold">Campus Bites Crew</span> will get back to you within 2 business days.
+                    </p>
+                    <p class="small text-secondary mt-3">
+                        For general inquiries, please fill out this short form below.
+                        <br />
+                        Have a question? Check our
+                        <a asp-controller="Home" asp-action="" class="text-campus fw-semibold">FAQs</a>
+                        for answers to the most commonly asked questions.
+                    </p>
+                </div>
+
+                <form asp-action="Index">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Name" class="form-label fw-bold"></label>
+                                <input asp-for="Name" class="form-control" placeholder="Enter your name" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label fw-bold"></label>
+                                <input asp-for="Email" class="form-control" placeholder="your.email@example.com" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="Topic" class="form-label fw-bold"></label>
+                        <select asp-for="Topic" class="form-select">
+                            <option value="">-- What can we help with? --</option>
+                            <option value="RecipeHelp">Recipe Help & Questions</option>
+                            <option value="IngredientSuggestion">Suggest New Ingredient</option>
+                            <option value="CategorySuggestion">Suggest Food Category</option>
+                            <option value="RecipeRequest">Recipe Request</option>
+                            <option value="Partnership">Partnership Opportunity</option>
+                            <option value="GeneralFeedback">General Feedback</option>
+                            <option value="AccountHelp">Account Help</option>
+                        </select>
+                        <span asp-validation-for="Topic" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="Subject" class="control-label fw-bold"></label>
+                        <input asp-for="Subject" class="form-control" placeholder="Brief summary of your message" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label asp-for="Message" class="control-label fw-bold"></label>
+                        <textarea asp-for="Message" class="form-control" placeholder="Tell us more about your question or suggestion..."></textarea>
+                        <span asp-validation-for="Message" class="text-danger"></span>
+                        <div class="form-text">Please provide enough details so we can help you better</div>
+                    </div>
+
+                    <div class="d-flex gap-3 align-items-center mt-3">
+                        <button type="submit" class="btn btn-cb-primary">
+                            <i class="bi bi-send me-2"></i>Send Message
+                        </button>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-light border shadow-sm">
+                            <i class="bi bi-house me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+

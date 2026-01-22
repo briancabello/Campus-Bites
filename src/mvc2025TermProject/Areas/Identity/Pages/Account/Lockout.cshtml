@@ -1,0 +1,25 @@
+﻿@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Locked out";
+}
+
+<div class="container text-center my-5">
+    <section class="my-3 my-md-4">
+        <h2 class="fs-2 py-3 mb-3 fw-bold text-danger">@ViewData["Title"]</h2>
+        <p class="text-danger">This account has been locked out, please try again later.</p>
+    </section>
+</div>
+
+@*
+@page
+@model LockoutModel
+@{
+    ViewData["Title"] = "Locked out";
+}
+
+<header>
+    <h1 class="text-danger">@ViewData["Title"]</h1>
+    <p class="text-danger">This account has been locked out, please try again later.</p>
+</header>
+*@

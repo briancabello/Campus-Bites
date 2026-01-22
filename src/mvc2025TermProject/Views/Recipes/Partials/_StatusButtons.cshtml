@@ -1,0 +1,80 @@
+﻿@model mvc2025TermProject.Models.RecipeDetailsViewModel
+
+@if (ViewData["CurrentUserId"] as string == Model.OwnerId)
+{
+    bool canPublish = ViewData["CanPublish"] as bool? == true;
+    
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-gear me-1"></i> Status: @Model.Status
+        </button>
+        <ul class="dropdown-menu">
+            <li><h6 class="dropdown-header">Current: @Model.Status</h6></li>
+            <li><hr class="dropdown-divider"></li>
+            
+            <!-- Draft Option -->
+            @if (Model.Status != "Draft")
+            {
+                <li>
+                    <form asp-controller="Recipes" asp-action="UpdateStatus" method="post" class="d-inline w-100">
+                        <input type="hidden" asp-for="ID" />
+                        <input type="hidden" name="newStatus" value="Draft" />
+
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-pencil me-2"></i>Set to Draft
+                        </button>
+                    </form>
+                </li>
+            }
+            
+            <!-- Public Option -->
+            @if (Model.Status != "Public")
+            {
+                <li>
+                    <form asp-controller="Recipes" asp-action="UpdateStatus" method="post" class="d-inline w-100">
+                        <input type="hidden" asp-for="ID" />
+                        <input type="hidden" name="newStatus" value="Public" />
+
+                        <button type="submit" class="dropdown-item @(canPublish ? "" : "disabled")" @(canPublish ? "" : "disabled")>
+                            <i class="bi bi-globe me-2"></i>Make Public
+                            @if (!canPublish)
+                            {
+                                <small class="text-muted d-block">Needs approved main image</small>
+                            }
+                        </button>
+                    </form>
+                </li>
+            }
+            
+            <!-- Private Option -->
+            @if (Model.Status != "Private")
+            {
+                <li>
+                    <form asp-controller="Recipes" asp-action="UpdateStatus" method="post" class="d-inline w-100">
+                        <input type="hidden" asp-for="ID" />
+                        <input type="hidden" name="newStatus" value="Private" />
+
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-lock me-2"></i>Make Private
+                        </button>
+                    </form>
+                </li>
+            }
+            
+            <!-- Unlisted Option -->
+            @if (Model.Status != "Unlisted")
+            {
+                <li>
+                    <form asp-controller="Recipes" asp-action="UpdateStatus" method="post" class="d-inline w-100">
+                        <input type="hidden" asp-for="ID" />
+                        <input type="hidden" name="newStatus" value="Unlisted" />
+
+                        <button type="submit" class="dropdown-item">
+                            <i class="bi bi-link me-2"></i>Make Unlisted
+                        </button>
+                    </form>
+                </li>
+            }
+        </ul>
+    </div>
+}
