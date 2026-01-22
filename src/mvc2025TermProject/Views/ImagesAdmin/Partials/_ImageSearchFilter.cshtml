@@ -1,0 +1,73 @@
+﻿@model mvc2025TermProject.Models.ImageAdminViewModel
+
+<div class="p-3 p-md-4 border-bottom bg-light">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+        <!-- Preserve status filter -->
+        <input type="hidden" name="statusFilter" value="@Model.StatusFilter" />
+
+        <!-- Search Input -->
+        <div class="col-12 col-md-6 col-lg-8">
+            <label for="searchInput" class="form-label fw-semibold small mb-1">
+                <i class="bi bi-search me-1"></i>Search Images
+            </label>
+            <input type="text"
+                   class="form-control"
+                   id="searchInput"
+                   name="searchString"
+                   value="@ViewData["SearchFilterCriteria"]"
+                   placeholder="Search by recipe name, uploader, or filename...">
+        </div>
+
+        <!-- Sort By Dropdown -->
+        <div class="col-12 col-md-4 col-lg-3">
+            <label for="sortOrder" class="form-label fw-semibold small mb-1">
+                <i class="bi bi-sort-down me-1"></i>Sort By
+            </label>
+            <select class="form-select" id="sortOrder" name="sortOrder" onchange="this.form.submit()">
+                <option value="">Recipe Name (A-Z)</option>
+
+                <option value="name_desc" asp-selected="@(ViewData["CurrentSort"]?.ToString() == "name_desc")">
+                    Recipe Name (Z-A)
+                </option>
+
+                <option value="date" asp-selected="@(ViewData["CurrentSort"]?.ToString() == "date")">
+                    Date (Oldest First)
+                </option>
+
+                <option value="date_desc" asp-selected="@(ViewData["CurrentSort"]?.ToString() == "date_desc")">
+                    Date (Newest First)
+                </option>
+
+                <option value="status" asp-selected="@(ViewData["CurrentSort"]?.ToString() == "status")">
+                    Status (Pending First)
+                </option>
+
+                <option value="status_desc" asp-selected="@(ViewData["CurrentSort"]?.ToString() == "status_desc")">
+                    Status (Approved First)
+                </option>
+            </select>
+        </div>
+
+        <!-- Search Button -->
+        <div class="col-12 col-lg-1 d-grid">
+            <button type="submit" class="btn btn-cb-primary">
+                <i class="bi bi-search d-lg-none"></i>
+                <span class="d-none d-lg-inline">Search</span>
+            </button>
+        </div>
+    </form>
+
+    <!-- Search Results Info -->
+    @if (ViewData["HasSearch"] as bool? == true)
+    {
+        <div class="mt-3 d-flex align-items-center justify-content-between">
+            <div class="text-muted small">
+                <i class="bi bi-funnel me-1"></i>
+                Found <strong>@ViewData["TotalMatches"]</strong> result(s) for "<strong>@ViewData["SearchFilterCriteria"]</strong>"
+            </div>
+            <a asp-action="Index" asp-route-statusFilter="@Model.StatusFilter" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Clear Search
+            </a>
+        </div>
+    }
+</div>

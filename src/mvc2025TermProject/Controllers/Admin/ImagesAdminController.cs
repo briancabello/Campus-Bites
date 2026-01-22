@@ -26,16 +26,43 @@ namespace mvc2025TermProject.Controllers.Admin
         }
 
         // GET: ImagesAdmin
-        public async Task<IActionResult> Index(string? statusFilter)
+        public async Task<IActionResult> Index(
+            string? statusFilter,
+            string? sortOrder,
+            string? filterCriteria,
+            string? searchString,
+            int? pageNumber)
         {
-            statusFilter = statusFilter ?? "Pending";
-            ViewData["StatusFilter"] = statusFilter;
+            const int pageSize = 12; // 12 images per page (3x4 grid)
 
+            // Set default status filter to Pending
+            statusFilter = statusFilter ?? "Pending";
+
+            // Set up sorting parameters
+            ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : null;
+            ViewData["DateSortParam"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["StatusSortParam"] = sortOrder == "status" ? "status_desc" : "status";
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["StatusFilter"] = statusFilter;
+            ViewData["SearchFilterCriteria"] = filterCriteria;
+
+            // Handle search string and pagination reset
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = filterCriteria;
+            }
+
+            // Build the base query
             var imagesQuery = _context.Images
                 .Include(i => i.Recipe)
                 .Include(i => i.UploadedBy)
                 .AsQueryable();
 
+            // Apply status filter
             if (statusFilter == "Pending")
             {
                 imagesQuery = imagesQuery.Where(i => i.IsApproved == false);
@@ -44,18 +71,73 @@ namespace mvc2025TermProject.Controllers.Admin
             {
                 imagesQuery = imagesQuery.Where(i => i.IsApproved == true);
             }
+            // "All" shows everything - no filter applied
 
-            var images = await imagesQuery
-                .OrderByDescending(i => i.UploadedDate)
-                .ToListAsync();
+            // Apply search filter
+            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
+            {
+                imagesQuery = imagesQuery.Where(i =>
+                    i.Recipe!.Name!.Contains(searchString) ||
+                    i.UploadedBy!.FirstName!.Contains(searchString) ||
+                    i.UploadedBy!.LastName!.Contains(searchString) ||
+                    i.FileName!.Contains(searchString)
+                );
+            }
 
+            // Get counts for the status tabs
+            int pendingCount = await _context.Images.CountAsync(i => i.IsApproved == false);
+            int approvedCount = await _context.Images.CountAsync(i => i.IsApproved == true);
+            int totalCount = await _context.Images.CountAsync();
+
+            // Total count for search results
+            int searchTotalCount = await imagesQuery.CountAsync();
+            ViewData["TotalMatches"] = searchTotalCount;
+            ViewData["HasSearch"] = !string.IsNullOrEmpty(filterCriteria);
+
+            // Apply sorting
+            switch (sortOrder)
+            {
+                case "date":
+                    imagesQuery = imagesQuery.OrderBy(i => i.UploadedDate);
+                    break;
+                case "date_desc":
+                    imagesQuery = imagesQuery.OrderByDescending(i => i.UploadedDate);
+                    break;
+                case "name_desc":
+                    imagesQuery = imagesQuery.OrderByDescending(i => i.Recipe!.Name);
+                    break;
+                case "status":
+                    imagesQuery = imagesQuery.OrderBy(i => i.IsApproved);
+                    break;
+                case "status_desc":
+                    imagesQuery = imagesQuery.OrderByDescending(i => i.IsApproved);
+                    break;
+                default:
+                    imagesQuery = imagesQuery.OrderBy(i => i.Recipe!.Name);
+                    break;
+            }
+
+            // Set page number
+            if (pageNumber == null)
+            {
+                pageNumber = 1;
+            }
+
+            // Create paginated list
+            var paginatedImages = await PaginatedList<Image>.CreateAsync(
+                imagesQuery,
+                pageNumber.Value,
+                pageSize);
+
+            // Create view model
             var viewModel = new ImageAdminViewModel
             {
-                Images = images,
+                Images = paginatedImages.ToList(),
                 StatusFilter = statusFilter,
-                PendingCount = await _context.Images.CountAsync(i => i.IsApproved == false),
-                ApprovedCount = await _context.Images.CountAsync(i => i.IsApproved == true),
-                TotalCount = await _context.Images.CountAsync()
+                PendingCount = pendingCount,
+                ApprovedCount = approvedCount,
+                TotalCount = totalCount,
+                PaginatedList = paginatedImages
             };
 
             return View(viewModel);
@@ -103,17 +185,6 @@ namespace mvc2025TermProject.Controllers.Admin
 
                 await _context.SaveChangesAsync();
 
-                // Check if recipe can be moved out of draft
-                var recipe = image.Recipe;
-                if (recipe != null && recipe.Status == "Draft")
-                {
-                    var hasApprovedImage = await _context.Images
-                        .AnyAsync(i => i.RecipeId == recipe.ID && i.IsApproved == true);
-
-                    // Recipe now has at least one approved image, owner can change status
-                    // No automatic status change needed per business rules
-                }
-
                 TempData["Success"] = $"Image approved successfully! Owner has been notified via email.";
                 return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });
             }
@@ -152,9 +223,6 @@ namespace mvc2025TermProject.Controllers.Admin
                 // Remove from database
                 _context.Images.Remove(image);
                 await _context.SaveChangesAsync();
-
-                // Send notification email to owner (implementation depends on email service)
-                // await SendRejectionEmailAsync(image.UploadedBy.Email, image.Recipe.Name, rejectionReason);
 
                 TempData["Success"] = $"Image rejected and deleted. Owner has been notified via email.";
                 return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });

@@ -21,21 +21,47 @@
                 </div>
             </div>
 
+            <!-- Search and Filter Section -->
+            <partial name="Partials/_ImageSearchFilter" model="Model" />
+
             <!-- Status Filter Tabs -->
             <partial name="Partials/_ImageStatusFilter" model="Model" />
 
             <!-- Images Gallery -->
             <div class="p-3 p-md-4">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
                 @if (Model.Images != null && Model.Images.Any())
                 {
                     <div class="row g-3">
                         @foreach (var image in Model.Images)
                         {
-                            <div class="col-12 col-md-6 col-lg-4">
-                                <partial name="Partials/_ImageReviewCard" model="image" />
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                <partial name="Partials/_ImageCard" model="image" />
                             </div>
                         }
                     </div>
+
+                    <!-- Pagination -->
+                    @if (Model.PaginatedList != null)
+                    {
+                        <partial name="Partials/_ImagePaginationPartial" model="Model.PaginatedList" />
+                    }
                 }
                 else
                 {
@@ -46,7 +72,7 @@
     </div>
 </div>
 
-<!-- Include Action Modals -->
+<!-- Include Action Modals for Pending Images -->
 @if (Model.Images != null)
 {
     foreach (var image in Model.Images.Where(i => i.IsApproved == false))

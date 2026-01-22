@@ -1,0 +1,77 @@
+﻿@model PaginatedList<mvc2025TermProject.Models.Image>
+
+@{
+    string prevDisabled = !Model!.HasPreviousPage ? "disabled" : "";
+    string nextDisabled = !Model.HasNextPage ? "disabled" : "";
+
+    int totalItems = Model.TotalItemCount;
+    int startItem = (Model.PageIndex - 1) * Model.PageSize + 1;
+    int endItem = Math.Min(Model.PageIndex * Model.PageSize, totalItems);
+
+    var statusFilter = ViewContext.RouteData.Values["statusFilter"]?.ToString() ?? ViewData["StatusFilter"]?.ToString();
+}
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-4 mt-4 border-top gap-2">
+    <!-- Item Count -->
+    <div class="text-muted small order-2 order-md-1 text-center text-md-start">
+        Showing @startItem to @endItem of @totalItems images
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Image pagination" class="order-1 order-md-2">
+        <ul class="pagination pagination-sm mb-0 justify-content-center">
+            <!-- Previous Page -->
+            <li class="page-item @prevDisabled">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-statusFilter="@statusFilter"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                    <span class="d-none d-sm-inline">Previous</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-left"></i></span>
+                </a>
+            </li>
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i == Model.PageIndex)
+                {
+                    <li class="page-item active">
+                        <span class="page-link">
+                            @i
+                            <span class="visually-hidden">(current)</span>
+                        </span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-statusFilter="@statusFilter"
+                           asp-route-pageNumber="@i"
+                           asp-route-sortOrder="@ViewData["CurrentSort"]"
+                           asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+
+            <!-- Next Page -->
+            <li class="page-item @nextDisabled">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-statusFilter="@statusFilter"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-filterCriteria="@ViewData["SearchFilterCriteria"]">
+                    <span class="d-none d-sm-inline">Next</span>
+                    <span class="d-inline d-sm-none"><i class="bi bi-chevron-right"></i></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

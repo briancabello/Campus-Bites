@@ -21,5 +21,8 @@ namespace mvc2025TermProject.Models
         [Display(Name = "Rejection Reason")]
         [StringLength(500, ErrorMessage = "Rejection reason cannot exceed 500 characters.")]
         public string? RejectionReason { get; set; }
+
+        // Pagination support
+        public PaginatedList<Image>? PaginatedList { get; set; }
     }
 }
