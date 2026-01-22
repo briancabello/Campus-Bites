@@ -1,0 +1,76 @@
+﻿@model mvc2025TermProject.Models.RecipeImageReviewViewModel
+
+<a asp-controller="ImagesAdmin"
+   asp-action="Review"
+   asp-route-id="@Model.RecipeId"
+   class="card border shadow-sm h-100 text-decoration-none">
+
+    <!-- Image Preview -->
+    <div class="position-relative">
+        @if (!string.IsNullOrEmpty(Model.MainImagePath))
+        {
+            <img src="@Model.MainImagePath"
+                 class="card-img-top"
+                 alt="@Model.RecipeName"
+                 style="height: 200px; object-fit: cover;">
+        }
+        else
+        {
+            <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                 style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>
+        }
+
+        <!-- Pending Badge -->
+        @if (Model.PendingImageCount > 0)
+        {
+            <span class="position-absolute top-0 end-0 badge bg-warning text-dark m-2">
+                <i class="bi bi-clock me-1"></i>@Model.PendingImageCount Pending
+            </span>
+        }
+    </div>
+
+    <div class="card-body">
+        <!-- Recipe Name -->
+        <h6 class="card-title fw-bold mb-2 text-dark">
+            @Model.RecipeName
+        </h6>
+
+        <!-- Image Stats -->
+        <div class="small text-muted">
+            <div class="mb-1">
+                <i class="bi bi-person me-1"></i>
+                <strong>Owner:</strong> @Model.RecipeOwnerName
+            </div>
+            <div class="mb-1">
+                <i class="bi bi-images me-1"></i>
+                <strong>Images:</strong> @Model.TotalImageCount total
+            </div>
+            <div class="mb-1">
+                <i class="bi bi-calendar me-1"></i>
+                <strong>Latest Upload:</strong> @Model.LatestUploadDate?.ToString("MMM d, yyyy")
+            </div>
+        </div>
+
+        <!-- Action Hint -->
+        @if (Model.PendingImageCount > 0)
+        {
+            <div class="mt-3 pt-3 border-top">
+                <small class="text-muted">
+                    <i class="bi bi-arrow-right-circle me-1"></i>
+                    Click to review @Model.PendingImageCount pending image(s)
+                </small>
+            </div>
+        }
+        else
+        {
+            <div class="mt-3 pt-3 border-top">
+                <small class="text-success">
+                    <i class="bi bi-check-circle me-1"></i>
+                    All @Model.ApprovedImageCount image(s) approved
+                </small>
+            </div>
+        }
+    </div>
+</a>

@@ -1,33 +1,59 @@
-﻿@model mvc2025TermProject.Models.ImageAdminViewModel
+﻿@model mvc2025TermProject.Models.ImageAdminIndexViewModel
+
 @{
-    ViewData["Title"] = "Review Images";
+    ViewData["Title"] = "Image Review";
 }
 
 <div class="container my-3 my-md-4">
     <div class="position-relative">
         <div class="auth-accent rounded-top"></div>
-        <div class="bg-white border shadow-sm overflow-hidden">
+
+        <div class="bg-white border rounded-bottom shadow-sm overflow-hidden">
 
             <!-- Header Section -->
-            <div class="p-3 p-md-4 border-bottom">
-                <div class="d-none d-md-flex align-items-center justify-content-between mb-1">
-                    <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
-                    <div class="text-muted fw-medium">
-                        <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, MMMM d, yyyy")
-                    </div>
-                </div>
-                <div class="d-md-none">
-                    <h3 class="fw-bold text-dark mb-1">@ViewData["Title"]</h3>
+            <div class="d-flex flex-wrap align-items-center justify-content-between p-3 p-md-4 border-bottom">
+                <h3 class="fw-bold mb-0 text-dark">@ViewData["Title"]</h3>
+                <div class="text-muted fw-medium d-none d-md-block">
+                    <i class="bi bi-calendar3 me-1"></i>@DateTime.Now.ToString("dddd, MMMM d, yyyy")
                 </div>
             </div>
 
-            <!-- Search and Filter Section -->
-            <partial name="Partials/_ImageSearchFilter" model="Model" />
-
             <!-- Status Filter Tabs -->
-            <partial name="Partials/_ImageStatusFilter" model="Model" />
+            <div class="d-flex flex-column px-4 py-3 border-bottom bg-light">
+                <div class="d-flex gap-2 flex-wrap">
+                    <a asp-action="Index"
+                       asp-route-statusFilter="Pending"
+                       class="btn @(Model.StatusFilter == "Pending" ? "btn-cb-primary" : "btn-outline-secondary")">
+                        <i class="bi bi-clock-history me-1"></i>
+                        Pending
+                        <span class="badge @(Model.StatusFilter == "Pending" ? "bg-white text-dark" : "bg-secondary") ms-1">
+                            @Model.PendingCount
+                        </span>
+                    </a>
 
-            <!-- Images Gallery -->
+                    <a asp-action="Index"
+                       asp-route-statusFilter="Approved"
+                       class="btn @(Model.StatusFilter == "Approved" ? "btn-cb-primary" : "btn-outline-secondary")">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Approved
+                        <span class="badge @(Model.StatusFilter == "Approved" ? "bg-white text-dark" : "bg-secondary") ms-1">
+                            @Model.ApprovedCount
+                        </span>
+                    </a>
+
+                    <a asp-action="Index"
+                       asp-route-statusFilter="All"
+                       class="btn @(Model.StatusFilter == "All" ? "btn-cb-primary" : "btn-outline-secondary")">
+                        <i class="bi bi-images me-1"></i>
+                        All Recipes
+                        <span class="badge @(Model.StatusFilter == "All" ? "bg-white text-dark" : "bg-secondary") ms-1">
+                            @Model.TotalCount
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recipe Cards Grid -->
             <div class="p-3 p-md-4">
                 @if (TempData["Success"] != null)
                 {
@@ -46,38 +72,49 @@
                     </div>
                 }
 
-                @if (Model.Images != null && Model.Images.Any())
+                @if (Model.Recipes != null && Model.Recipes.Any())
                 {
                     <div class="row g-3">
-                        @foreach (var image in Model.Images)
+                        @foreach (var recipe in Model.Recipes)
                         {
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <partial name="Partials/_ImageCard" model="image" />
+                                <partial name="Partials/_RecipeImageCard" model="recipe" />
                             </div>
                         }
                     </div>
 
                     <!-- Pagination -->
-                    @if (Model.PaginatedList != null)
+                    @if (Model.Recipes.TotalPages > 1)
                     {
-                        <partial name="Partials/_ImagePaginationPartial" model="Model.PaginatedList" />
+                        <partial name="Partials/_ImageAdminPagination" model="Model.Recipes" />
                     }
                 }
                 else
                 {
-                    <partial name="Partials/_NoImagesMessage" model="Model.StatusFilter" />
+                    <!-- Empty State -->
+                    <div class="text-center py-5">
+                        @if (Model.StatusFilter == "Pending")
+                        {
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                            <h4 class="mt-3 mb-2">All Clear! 🎉</h4>
+                            <p class="text-muted">No pending images to review. Great job!</p>
+                        }
+                        else if (Model.StatusFilter == "Approved")
+                        {
+                            <i class="bi bi-archive text-muted" style="font-size: 4rem;"></i>
+                            <h4 class="mt-3 mb-2">No Approved Images Yet</h4>
+                            <p class="text-muted">Approved images will appear here once you review pending uploads.</p>
+                        }
+                        else
+                        {
+                            <i class="bi bi-images text-muted" style="font-size: 4rem;"></i>
+                            <h4 class="mt-3 mb-2">No Images Found</h4>
+                            <p class="text-muted">No recipes with images in the system yet.</p>
+                        }
+                    </div>
                 }
             </div>
+
         </div>
     </div>
 </div>
-
-<!-- Include Action Modals for Pending Images -->
-@if (Model.Images != null)
-{
-    foreach (var image in Model.Images.Where(i => i.IsApproved == false))
-    {
-        <partial name="Partials/_ApproveImageModal" model="image" />
-        <partial name="Partials/_RejectImageModal" model="image" />
-    }
-}

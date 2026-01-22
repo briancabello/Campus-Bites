@@ -25,119 +25,119 @@ namespace mvc2025TermProject.Controllers.Admin
             _environment = environment;
         }
 
-        // GET: ImagesAdmin
-        public async Task<IActionResult> Index(
-            string? statusFilter,
-            string? sortOrder,
-            string? filterCriteria,
-            string? searchString,
-            int? pageNumber)
+        // GET: ImagesAdmin - Recipe Cards with Pending Images
+        public async Task<IActionResult> Index(string? statusFilter, int? pageNumber)
         {
-            const int pageSize = 12; // 12 images per page (3x4 grid)
+            const int pageSize = 12;
 
-            // Set default status filter to Pending
+            // Default to Pending
             statusFilter = statusFilter ?? "Pending";
+            ViewData["CurrentStatus"] = statusFilter;
 
-            // Set up sorting parameters
-            ViewData["NameSortParam"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : null;
-            ViewData["DateSortParam"] = sortOrder == "date" ? "date_desc" : "date";
-            ViewData["StatusSortParam"] = sortOrder == "status" ? "status_desc" : "status";
-            ViewData["CurrentSort"] = sortOrder;
-            ViewData["StatusFilter"] = statusFilter;
-            ViewData["SearchFilterCriteria"] = filterCriteria;
-
-            // Handle search string and pagination reset
-            if (searchString != null)
-            {
-                pageNumber = 1;
-            }
-            else
-            {
-                searchString = filterCriteria;
-            }
-
-            // Build the base query
-            var imagesQuery = _context.Images
-                .Include(i => i.Recipe)
-                .Include(i => i.UploadedBy)
+            // Get recipes that have images in the selected status
+            var recipesQuery = _context.Recipes
+                .Include(r => r.Images!)
+                    .ThenInclude(i => i.UploadedBy)
+                .Include(r => r.Owner)
+                .Where(r => r.Images!.Any()) // Has images
                 .AsQueryable();
 
-            // Apply status filter
+            // Filter by image status
             if (statusFilter == "Pending")
             {
-                imagesQuery = imagesQuery.Where(i => i.IsApproved == false);
+                recipesQuery = recipesQuery.Where(r => r.Images!.Any(i => i.IsApproved == false));
             }
             else if (statusFilter == "Approved")
             {
-                imagesQuery = imagesQuery.Where(i => i.IsApproved == true);
+                recipesQuery = recipesQuery.Where(r => r.Images!.Any(i => i.IsApproved == true));
             }
-            // "All" shows everything - no filter applied
 
-            // Apply search filter
-            if (!string.IsNullOrEmpty(searchString) && !string.IsNullOrWhiteSpace(searchString))
+            // Get counts for filter tabs
+            var allRecipes = _context.Recipes.Include(r => r.Images!).Where(r => r.Images!.Any());
+            ViewData["PendingCount"] = await allRecipes.CountAsync(r => r.Images!.Any(i => i.IsApproved == false));
+            ViewData["ApprovedCount"] = await allRecipes.CountAsync(r => r.Images!.Any(i => i.IsApproved == true));
+            int totalCount = await allRecipes.CountAsync();
+
+            // Create view models
+            var recipeListQuery = recipesQuery.Select(r => new RecipeImageReviewViewModel
             {
-                imagesQuery = imagesQuery.Where(i =>
-                    i.Recipe!.Name!.Contains(searchString) ||
-                    i.UploadedBy!.FirstName!.Contains(searchString) ||
-                    i.UploadedBy!.LastName!.Contains(searchString) ||
-                    i.FileName!.Contains(searchString)
-                );
-            }
+                RecipeId = r.ID,
+                RecipeName = r.Name,
+                RecipeOwnerName = r.Owner != null ? $"{r.Owner.FirstName} {r.Owner.LastName}" : "Unknown",
+                PendingImageCount = r.Images!.Count(i => i.IsApproved == false),
+                ApprovedImageCount = r.Images!.Count(i => i.IsApproved == true),
+                TotalImageCount = r.Images!.Count(),
+                MainImagePath = r.Images!.FirstOrDefault(i => i.IsMainImage == true) != null
+                    ? r.Images!.First(i => i.IsMainImage == true).FilePath
+                    : r.Images!.FirstOrDefault() != null
+                        ? r.Images!.First().FilePath
+                        : null,
+                LatestUploadDate = r.Images!.Max(i => i.UploadedDate)
+            });
 
-            // Get counts for the status tabs
-            int pendingCount = await _context.Images.CountAsync(i => i.IsApproved == false);
-            int approvedCount = await _context.Images.CountAsync(i => i.IsApproved == true);
-            int totalCount = await _context.Images.CountAsync();
+            // Sort by latest upload date
+            recipeListQuery = recipeListQuery.OrderByDescending(r => r.LatestUploadDate);
 
-            // Total count for search results
-            int searchTotalCount = await imagesQuery.CountAsync();
-            ViewData["TotalMatches"] = searchTotalCount;
-            ViewData["HasSearch"] = !string.IsNullOrEmpty(filterCriteria);
+            // Pagination
+            var paginatedList = await PaginatedList<RecipeImageReviewViewModel>
+                .CreateAsync(recipeListQuery, pageNumber ?? 1, pageSize);
 
-            // Apply sorting
-            switch (sortOrder)
+            // View model
+            var viewModel = new ImageAdminIndexViewModel
             {
-                case "date":
-                    imagesQuery = imagesQuery.OrderBy(i => i.UploadedDate);
-                    break;
-                case "date_desc":
-                    imagesQuery = imagesQuery.OrderByDescending(i => i.UploadedDate);
-                    break;
-                case "name_desc":
-                    imagesQuery = imagesQuery.OrderByDescending(i => i.Recipe!.Name);
-                    break;
-                case "status":
-                    imagesQuery = imagesQuery.OrderBy(i => i.IsApproved);
-                    break;
-                case "status_desc":
-                    imagesQuery = imagesQuery.OrderByDescending(i => i.IsApproved);
-                    break;
-                default:
-                    imagesQuery = imagesQuery.OrderBy(i => i.Recipe!.Name);
-                    break;
-            }
+                Recipes = paginatedList,
+                StatusFilter = statusFilter,
+                PendingCount = (int)ViewData["PendingCount"]!,
+                ApprovedCount = (int)ViewData["ApprovedCount"]!,
+                TotalCount = totalCount
+            };
 
-            // Set page number
-            if (pageNumber == null)
+            return View(viewModel);
+        }
+
+        // GET: ImagesAdmin/Review/5 - Review images for a specific recipe
+        public async Task<IActionResult> Review(int? id, int? currentImageIndex)
+        {
+            if (id == null)
             {
-                pageNumber = 1;
+                return NotFound();
             }
 
-            // Create paginated list
-            var paginatedImages = await PaginatedList<Image>.CreateAsync(
-                imagesQuery,
-                pageNumber.Value,
-                pageSize);
+            var recipe = await _context.Recipes
+                .Include(r => r.Images!)
+                    .ThenInclude(i => i.UploadedBy)
+                .Include(r => r.Owner)
+                .FirstOrDefaultAsync(r => r.ID == id);
+
+            if (recipe == null || recipe.Images == null || !recipe.Images.Any())
+            {
+                return NotFound();
+            }
+
+            // Get all images for this recipe, ordered by upload date
+            var images = recipe.Images.OrderBy(i => i.UploadedDate).ToList();
+
+            // Set current image index (default to 0)
+            int index = currentImageIndex ?? 0;
+            if (index < 0 || index >= images.Count)
+            {
+                index = 0;
+            }
+
+            var currentImage = images[index];
 
             // Create view model
-            var viewModel = new ImageAdminViewModel
+            var viewModel = new ImageReviewViewModel
             {
-                Images = paginatedImages.ToList(),
-                StatusFilter = statusFilter,
-                PendingCount = pendingCount,
-                ApprovedCount = approvedCount,
-                TotalCount = totalCount,
-                PaginatedList = paginatedImages
+                RecipeId = recipe.ID!.Value,
+                RecipeName = recipe.Name,
+                RecipeOwnerName = recipe.Owner != null ? $"{recipe.Owner.FirstName} {recipe.Owner.LastName}" : "Unknown",
+                CurrentImage = currentImage,
+                CurrentImageIndex = index,
+                TotalImages = images.Count,
+                HasPreviousImage = index > 0,
+                HasNextImage = index < images.Count - 1,
+                AllImageThumbnails = images
             };
 
             return View(viewModel);
@@ -146,11 +146,10 @@ namespace mvc2025TermProject.Controllers.Admin
         // POST: ImagesAdmin/Approve/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(int id)
+        public async Task<IActionResult> Approve(int id, int recipeId, int currentImageIndex)
         {
             var image = await _context.Images
                 .Include(i => i.Recipe)
-                .Include(i => i.UploadedBy)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (image == null)
@@ -185,24 +184,39 @@ namespace mvc2025TermProject.Controllers.Admin
 
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Image approved successfully! Owner has been notified via email.";
-                return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });
+                TempData["Success"] = $"Image approved successfully!";
+
+                // Check if there are more pending images for this recipe
+                var remainingPendingImages = await _context.Images
+                    .Where(i => i.RecipeId == recipeId && i.IsApproved == false)
+                    .CountAsync();
+
+                if (remainingPendingImages > 0)
+                {
+                    // Stay on Review page, move to next image
+                    return RedirectToAction(nameof(Review), new { id = recipeId, currentImageIndex = currentImageIndex });
+                }
+                else
+                {
+                    // All images reviewed, go back to Index
+                    TempData["Success"] = $"All images for this recipe have been reviewed!";
+                    return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });
+                }
             }
             catch (Exception ex)
             {
                 TempData["Error"] = $"Error approving image: {ex.Message}";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Review), new { id = recipeId, currentImageIndex = currentImageIndex });
             }
         }
 
         // POST: ImagesAdmin/Reject/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reject(int id, string? rejectionReason)
+        public async Task<IActionResult> Reject(int id, int recipeId, int currentImageIndex, string? rejectionReason)
         {
             var image = await _context.Images
                 .Include(i => i.Recipe)
-                .Include(i => i.UploadedBy)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (image == null)
@@ -224,36 +238,76 @@ namespace mvc2025TermProject.Controllers.Admin
                 _context.Images.Remove(image);
                 await _context.SaveChangesAsync();
 
-                TempData["Success"] = $"Image rejected and deleted. Owner has been notified via email.";
-                return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });
+                // TODO: Send rejection email with reason
+
+                TempData["Success"] = $"Image rejected and deleted.";
+
+                // Check if there are more pending images for this recipe
+                var remainingPendingImages = await _context.Images
+                    .Where(i => i.RecipeId == recipeId && i.IsApproved == false)
+                    .CountAsync();
+
+                if (remainingPendingImages > 0)
+                {
+                    // Stay on Review page, adjust index if needed
+                    int nextIndex = currentImageIndex;
+                    if (nextIndex >= remainingPendingImages)
+                    {
+                        nextIndex = remainingPendingImages - 1;
+                    }
+                    return RedirectToAction(nameof(Review), new { id = recipeId, currentImageIndex = nextIndex });
+                }
+                else
+                {
+                    // All images reviewed, go back to Index
+                    TempData["Success"] = $"All images for this recipe have been reviewed!";
+                    return RedirectToAction(nameof(Index), new { statusFilter = "Pending" });
+                }
             }
             catch (Exception ex)
             {
                 TempData["Error"] = $"Error rejecting image: {ex.Message}";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Review), new { id = recipeId, currentImageIndex = currentImageIndex });
             }
         }
 
-        // GET: ImagesAdmin/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // POST: ImagesAdmin/SetMainImage/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SetMainImage(int id, int recipeId, int currentImageIndex)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var image = await _context.Images
-                .Include(i => i.Recipe)
-                .Include(i => i.UploadedBy)
-                .Include(i => i.ApprovedBy)
-                .FirstOrDefaultAsync(i => i.Id == id);
+            var image = await _context.Images.FindAsync(id);
 
             if (image == null)
             {
                 return NotFound();
             }
 
-            return View(image);
+            try
+            {
+                // Reset all images for this recipe to not be main
+                var recipeImages = await _context.Images
+                    .Where(i => i.RecipeId == recipeId)
+                    .ToListAsync();
+
+                foreach (var img in recipeImages)
+                {
+                    img.IsMainImage = false;
+                }
+
+                // Set the selected image as main
+                image.IsMainImage = true;
+
+                await _context.SaveChangesAsync();
+
+                TempData["Success"] = "Main image updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error setting main image: {ex.Message}";
+            }
+
+            return RedirectToAction(nameof(Review), new { id = recipeId, currentImageIndex = currentImageIndex });
         }
     }
 }
