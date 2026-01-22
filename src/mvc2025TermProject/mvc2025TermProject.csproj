@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Public\" />
+    <Folder Include="wwwroot\img\recipes\" />
   </ItemGroup>
 
   <ItemGroup>

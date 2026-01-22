@@ -32,7 +32,7 @@
                         }
 
                         <!-- Action Buttons -->
-                        @* @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.Recipe?.Status == "Draft" || Model.Recipe?.Status == "Initial"))
+                        @if (User.Identity?.IsAuthenticated == true && Model.CurrentUserId == Model.OwnerId && (Model.RecipeStatus == "Draft" || Model.RecipeStatus == "Initial"))
                         {
                             <div class="position-absolute top-0 end-0 m-3">
                                 <a href="#"
@@ -43,7 +43,7 @@
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
-                        } *@
+                        }
                     </div>
                 }
                 else
@@ -123,14 +123,14 @@
                                                     </button>
                                                 </form>
 
-                                                @* <!-- Delete Button -->
+                                                <!-- Delete Button -->
                                                 <a href="#"
                                                    class="btn btn-danger btn-sm image-action-link"
                                                    data-bs-toggle="modal"
                                                    data-bs-target="#deleteImageModal-@thumbnail.Id"
                                                    title="Delete image">
                                                     <i class="bi bi-trash"></i>
-                                                </a> *@
+                                                </a>
                                             </div>
                                         </div>
                                     }
