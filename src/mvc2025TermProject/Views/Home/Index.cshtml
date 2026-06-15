@@ -2,18 +2,28 @@
     ViewData["Title"] = "Home";
 }
 
+<style>
+    /* Hero banner image fills its column width edge-to-edge (no side gaps),
+       height scales with the image so it's never cropped. */
+    .hero-banner-img {
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+</style>
+
 <section class="p-0">
 
     <div class="container">
         @* Banner *@
-        <div class="rounded-lgx overflow-hidden border-0 banner-bg-color mt-0 mt-md-4">
-            <div class="row g-0">
+        <div class="hero-banner rounded-lgx overflow-hidden border-0 banner-bg-color mt-0 mt-md-4">
+            <div class="row g-0 h-100">
 
-                <div class="col-lg-7">
-                    <img src="~/img/broccoli-chicken.jpg" class="w-100" alt="Bowl Broccoli Chicken" />
+                <div class="col-lg-6">
+                    <img src="~/img/broccoli-chicken.jpg" class="hero-banner-img" alt="Bowl Broccoli Chicken" />
                 </div>
 
-                <div class="col-lg-5">
+                <div class="col-lg-6">
                     <div class="p-4 p-md-5 d-flex flex-column justify-content-center h-100 position-relative">
                         <h4 class="my-3">Easy Meals For Student Life</h4>
                         <p class="fs-4 pe-0 pe-md-5 pb-3 pb-sm-5 pb-lg-0">
