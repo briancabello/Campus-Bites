@@ -9,12 +9,10 @@ Campus Bites was built as an NBCC term project by a two-person team under the na
 
 ## Team & Roles
 
-| Name | Role |
-| --- | --- |
-| **Luc Langis** | Full-Stack Lead & Client Liaison |
-| **Brian Cabello** | Front-End Lead & UX Designer |
-
-> A spelling note for whoever reviews this: every existing record for this project (this repository's own prior README, and the collaborator field in Brian's portfolio content) spells the name **Luc Langis**. Please confirm before treating any other spelling as final.
+| Name | GitHub | Role |
+| --- | --- | --- |
+| **Luc Langis** | [@llangis](https://github.com/llangis) | Full-Stack Lead & Client Liaison |
+| **Brian Cabello** | [@briancabello](https://github.com/briancabello) | Front-End Lead & UX Designer |
 
 ## Working in This Repository
 
